@@ -1,0 +1,23 @@
+{
+  "name": "generate-fonts",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Generador de fuentes de iconos a partir de SVG (fantasticon).",
+  "type": "module",
+  "engines": {
+    "node": ">=22"
+  },
+  "scripts": {
+    "build": "node scripts/build-icons.mjs",
+    "postinstall": "patch-package",
+    "export": "node scripts/export-icons.mjs",
+    "new": "node scripts/new-font.mjs",
+    "sync": "node scripts/sync-figma.mjs"
+  },
+  "devDependencies": {
+    "fantasticon": "4.1.0",
+    "handlebars": "4.7.10",
+    "patch-package": "8.0.1",
+    "svgo": "4.1.0"
+  }
+}

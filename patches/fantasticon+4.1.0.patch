@@ -1,0 +1,66 @@
+diff --git a/node_modules/fantasticon/dist/chunk-I73JJ2KG.js b/node_modules/fantasticon/dist/chunk-I73JJ2KG.js
+index 3c7ba01..a0a7f5b 100644
+--- a/node_modules/fantasticon/dist/chunk-I73JJ2KG.js
++++ b/node_modules/fantasticon/dist/chunk-I73JJ2KG.js
+@@ -177,7 +177,7 @@ import { resolve as resolve3, relative, join as join2 } from "path";
+ var ASSETS_EXTENSION = "svg";
+ var loadPaths = async (dir) => {
+   const globPath = join2(dir, `**/*.${ASSETS_EXTENSION}`);
+-  const files = await glob(globPath, {});
++  const files = await glob(globPath, { windowsPathsNoEscape: true });
+   if (!files.length) {
+     throw new Error(`No SVGs found in ${dir}`);
+   }
+@@ -399,7 +399,7 @@ var generator5 = {
+   dependsOn: "ttf" /* TTF */,
+   async generate(_options, ttf) {
+     const font = ttf2eot(new Uint8Array(ttf));
+-    return Buffer.from(font.buffer);
++    return Buffer.from(font.buffer, font.byteOffset, font.byteLength);
+   }
+ };
+ var eot_default = generator5;
+diff --git a/node_modules/fantasticon/dist/cli/index.cjs b/node_modules/fantasticon/dist/cli/index.cjs
+index d37fa52..05ce00c 100644
+--- a/node_modules/fantasticon/dist/cli/index.cjs
++++ b/node_modules/fantasticon/dist/cli/index.cjs
+@@ -283,7 +283,7 @@ var import_path6 = require("path");
+ var ASSETS_EXTENSION = "svg";
+ var loadPaths = async (dir) => {
+   const globPath = (0, import_path6.join)(dir, `**/*.${ASSETS_EXTENSION}`);
+-  const files = await (0, import_glob.glob)(globPath, {});
++  const files = await (0, import_glob.glob)(globPath, { windowsPathsNoEscape: true });
+   if (!files.length) {
+     throw new Error(`No SVGs found in ${dir}`);
+   }
+@@ -566,7 +566,7 @@ var generator5 = {
+   dependsOn: "ttf" /* TTF */,
+   async generate(_options, ttf) {
+     const font = (0, import_ttf2eot.default)(new Uint8Array(ttf));
+-    return Buffer.from(font.buffer);
++    return Buffer.from(font.buffer, font.byteOffset, font.byteLength);
+   }
+ };
+ var eot_default = generator5;
+diff --git a/node_modules/fantasticon/dist/index.cjs b/node_modules/fantasticon/dist/index.cjs
+index 744da25..024f8f0 100644
+--- a/node_modules/fantasticon/dist/index.cjs
++++ b/node_modules/fantasticon/dist/index.cjs
+@@ -147,7 +147,7 @@ var checkPath = async (filepath, type) => {
+ var ASSETS_EXTENSION = "svg";
+ var loadPaths = async (dir) => {
+   const globPath = (0, import_path5.join)(dir, `**/*.${ASSETS_EXTENSION}`);
+-  const files = await (0, import_glob.glob)(globPath, {});
++  const files = await (0, import_glob.glob)(globPath, { windowsPathsNoEscape: true });
+   if (!files.length) {
+     throw new Error(`No SVGs found in ${dir}`);
+   }
+@@ -422,7 +422,7 @@ var generator5 = {
+   dependsOn: "ttf" /* TTF */,
+   async generate(_options, ttf) {
+     const font = (0, import_ttf2eot.default)(new Uint8Array(ttf));
+-    return Buffer.from(font.buffer);
++    return Buffer.from(font.buffer, font.byteOffset, font.byteLength);
+   }
+ };
+ var eot_default = generator5;

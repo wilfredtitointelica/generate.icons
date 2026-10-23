@@ -1,0 +1,353 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Exportar iconos</title>
+  <style>
+    :root {
+      --bg: #ffffff;
+      --surface: #f5f7fa;
+      --border: #e1e5ea;
+      --text: #1f2933;
+      --muted: #5c6b7a;
+      --accent: #2457c5;
+      --code-bg: #eef1f5;
+      --ok: #1e7a46;
+      --warn-bg: #fff6e0;
+      --warn-border: #f0c36d;
+      --error: #b42318;
+    }
+    @media (prefers-color-scheme: dark) {
+      :root:not([data-theme="light"]) {
+        --bg: #12161b;
+        --surface: #1a2027;
+        --border: #2c343e;
+        --text: #e4e8ed;
+        --muted: #9aa6b3;
+        --accent: #7aa2ff;
+        --code-bg: #212932;
+        --ok: #5cc98a;
+        --warn-bg: #2b2414;
+        --warn-border: #7a5d1f;
+        --error: #ff8a80;
+      }
+    }
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      background: var(--bg);
+      color: var(--text);
+      font: 15px/1.6 system-ui, -apple-system, "Segoe UI", sans-serif;
+    }
+    main { max-width: 860px; margin: 0 auto; padding: 40px 16px 64px; }
+    h1 { font-size: 28px; margin: 0 0 4px; }
+    h2 { font-size: 20px; margin: 40px 0 12px; padding-top: 8px; border-top: 1px solid var(--border); }
+    h3 { font-size: 16px; margin: 24px 0 8px; }
+    p, ul, ol { margin: 0 0 12px; }
+    li { margin-bottom: 4px; }
+    a { color: var(--accent); }
+    .lead { color: var(--muted); font-size: 16px; margin-bottom: 24px; }
+    code { font: 13px/1.5 ui-monospace, Consolas, monospace; background: var(--code-bg); padding: 1px 5px; border-radius: 4px; }
+    pre { background: var(--code-bg); border: 1px solid var(--border); border-radius: 8px; padding: 14px 16px; overflow-x: auto; margin: 0 0 16px; }
+    p code, li code, td code { overflow-wrap: anywhere; }
+    pre code { background: none; padding: 0; }
+    .comment { color: var(--muted); }
+    table { width: 100%; border-collapse: collapse; margin: 0 0 16px; font-size: 14px; }
+    th, td { text-align: left; vertical-align: top; padding: 8px 10px; border-bottom: 1px solid var(--border); }
+    th { color: var(--muted); font-weight: 600; }
+    .table-wrap { overflow-x: auto; }
+    nav { background: var(--surface); border: 1px solid var(--border); border-radius: 8px; padding: 12px 16px; margin-bottom: 8px; }
+    nav ol { margin: 0; padding-left: 20px; columns: 2; column-gap: 32px; }
+    .note { background: var(--warn-bg); border: 1px solid var(--warn-border); border-radius: 8px; padding: 12px 16px; margin: 0 0 16px; }
+    .steps { counter-reset: step; list-style: none; padding: 0; }
+    .steps > li { counter-increment: step; position: relative; padding-left: 40px; margin-bottom: 16px; }
+    .steps > li::before {
+      content: counter(step);
+      position: absolute; left: 0; top: 0;
+      width: 26px; height: 26px; border-radius: 50%;
+      background: var(--accent); color: var(--bg);
+      font-weight: 600; font-size: 13px; text-align: center; line-height: 26px;
+    }
+    .ok { color: var(--ok); font-weight: 600; }
+    .err { color: var(--error); font-weight: 600; }
+    @media (max-width: 600px) { nav ol { columns: 1; } }
+  </style>
+</head>
+<body>
+<main>
+  <h1>Exportar iconos</h1>
+  <p class="lead">
+    Cómo copiar una fuente de iconos generada en <code>generate-fonts/</code> a la carpeta de un proyecto con
+    <code>scripts/export-icons.mjs</code> (o con el skill <code>/exportar-iconos</code>).
+  </p>
+
+  <nav aria-label="Contenido">
+    <ol>
+      <li><a href="#por-que">Por qué exportar</a></li>
+      <li><a href="#requisitos">Requisitos</a></li>
+      <li><a href="#comando">Comando</a></li>
+      <li><a href="#ejemplos">Ejemplos</a></li>
+      <li><a href="#resultado">Qué se copia</a></li>
+      <li><a href="#reglas">Reglas y validaciones</a></li>
+      <li><a href="#skill">Con Claude Code</a></li>
+      <li><a href="#proyecto">Usarlo en el proyecto</a></li>
+      <li><a href="#actualizar">Actualizar iconos</a></li>
+      <li><a href="#errores">Mensajes de error</a></li>
+    </ol>
+  </nav>
+
+  <h2 id="por-que">1. Por qué exportar</h2>
+  <p>
+    <code>generate-fonts/</code> <strong>solo genera</strong> fuentes: tiene sus propias dependencias y no forma
+    parte de ninguna aplicación. Ningún proyecto debe referenciar archivos dentro de <code>generate-fonts/</code>.
+  </p>
+  <p>
+    En su lugar, la fuente generada se <strong>copia</strong> a una carpeta del proyecto, y el proyecto
+    usa esa copia. Así el proyecto no depende de dónde esté <code>generate-fonts/</code> ni de sus dependencias.
+  </p>
+<pre><code>generate-fonts/fonts/incontrol-icons/dist/  +  icons.json
+            │
+            │  npm run export
+            ▼
+&lt;proyecto&gt;/src/assets/fonts/incontrol-icons/   ← el proyecto referencia esta copia</code></pre>
+
+  <h2 id="requisitos">2. Requisitos</h2>
+  <ul>
+    <li>Node.js 22 o superior.</li>
+    <li>Dependencias instaladas en <code>generate-fonts/</code> (solo la primera vez): <code>npm ci</code>.</li>
+    <li>
+      La fuente <strong>generada</strong>: SVG en <code>fonts/&lt;fuente&gt;/source/</code> (en carpetas de categoría o directos)
+      y <code>npm run build</code> (todas) o <code>npm run build -- &lt;fuente&gt;</code> ejecutado. La
+      exportación no genera; copia lo que ya hay en <code>dist/</code>.
+    </li>
+  </ul>
+<pre><code>cd generate-fonts
+npm ci          <span class="comment"># solo la primera vez</span>
+npm run build   <span class="comment"># cada vez que cambian los SVG</span></code></pre>
+
+  <h2 id="comando">3. Comando</h2>
+  <p>Desde la carpeta <code>generate-fonts/</code>:</p>
+<pre><code>npm run export -- &lt;fuente&gt; &lt;ruta&gt; [--folder &lt;carpeta&gt;] [--force]</code></pre>
+  <p>El <code>--</code> después de <code>export</code> es obligatorio: separa los argumentos de npm de los del script.</p>
+
+  <div class="table-wrap">
+    <table>
+      <thead>
+        <tr><th>Argumento</th><th>Obligatorio</th><th>Qué es</th></tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td><code>&lt;fuente&gt;</code></td>
+          <td>Sí</td>
+          <td>Carpeta de la fuente dentro de <code>generate-fonts/fonts/</code>: <code>incontrol-icons</code>, <code>incontrol-system</code>, …</td>
+        </tr>
+        <tr>
+          <td><code>&lt;ruta&gt;</code></td>
+          <td>Sí</td>
+          <td>
+            Carpeta <strong>donde se crea</strong> la carpeta de iconos. Mejor absoluta y entre comillas.
+            Si es relativa, se resuelve desde la carpeta donde ejecutas npm.
+          </td>
+        </tr>
+        <tr>
+          <td><code>--folder &lt;carpeta&gt;</code></td>
+          <td>No</td>
+          <td>
+            Nombre de la carpeta a crear dentro de <code>&lt;ruta&gt;</code>. Por defecto, el nombre de
+            la fuente (<code>incontrol-icons</code>). Solo letras, números, <code>.</code>, <code>_</code>
+            y <code>-</code>.
+          </td>
+        </tr>
+        <tr>
+          <td><code>--force</code></td>
+          <td>No</td>
+          <td>Sobrescribe una copia anterior. Sin él, si ya existe una copia, no se escribe nada.</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <h2 id="ejemplos">4. Ejemplos</h2>
+
+  <h3>Primera exportación</h3>
+<pre><code>npm run export -- incontrol-icons "C:/projects/mi-app/src/assets/fonts"</code></pre>
+  <p>Crea <code>C:/projects/mi-app/src/assets/fonts/incontrol-icons/</code> con los 9 archivos.</p>
+
+  <h3>Con otro nombre de carpeta</h3>
+<pre><code>npm run export -- incontrol-icons "C:/projects/mi-app/src/assets" --folder icons</code></pre>
+  <p>
+    Crea <code>C:/projects/mi-app/src/assets/icons/</code>. Los archivos dentro siguen llamándose
+    <code>incontrol-icons.*</code>; solo cambia el nombre de la carpeta.
+  </p>
+
+  <h3>Actualizar una copia existente</h3>
+<pre><code>npm run export -- incontrol-icons "C:/projects/mi-app/src/assets/fonts" --force</code></pre>
+  <p>Sobrescribe los 9 archivos. Cualquier otro archivo que hayas puesto en esa carpeta se conserva.</p>
+
+  <h3>Desde otra carpeta, con ruta relativa</h3>
+<pre><code><span class="comment"># ejecutado desde C:/projects/mi-app</span>
+npm --prefix C:/christian/projects/custom-components/generate-fonts run export -- incontrol-icons src/assets/fonts</code></pre>
+  <p>La ruta relativa se resuelve desde <code>C:/projects/mi-app</code>, que es donde se ejecutó npm.</p>
+
+  <h2 id="resultado">5. Qué se copia</h2>
+<pre><code>&lt;ruta&gt;/&lt;carpeta&gt;/
+├── incontrol-icons.css     <span class="comment"># @font-face + una clase por icono (.icon-search)</span>
+├── incontrol-icons.woff2   <span class="comment"># fuente (formato principal)</span>
+├── incontrol-icons.woff
+├── incontrol-icons.ttf
+├── incontrol-icons.eot
+├── incontrol-icons.svg
+├── incontrol-icons.html    <span class="comment"># vista previa de todos los iconos (ábrela en el navegador)</span>
+├── incontrol-icons.json    <span class="comment"># nombre → código Unicode: "icon-search": 61698</span>
+└── icons.json              <span class="comment"># iconos por categoría y/o sin categoría</span></code></pre>
+  <p>
+    <code>icons.json</code> sigue la organización de <code>source/</code>: los iconos en carpetas de
+    categoría van en <code>categories</code>, y los SVG puestos directamente en <code>source/</code>
+    (sin categoría) van en <code>icons</code>.
+  </p>
+  <div class="table-wrap">
+    <table>
+      <thead>
+        <tr><th><code>source/</code> tiene</th><th><code>icons.json</code> tiene</th></tr>
+      </thead>
+      <tbody>
+        <tr><td>Solo carpetas de categoría</td><td><code>categories</code></td></tr>
+        <tr><td>Solo SVG directos</td><td><code>icons</code></td></tr>
+        <tr><td>Ambos</td><td><code>categories</code> e <code>icons</code></td></tr>
+      </tbody>
+    </table>
+  </div>
+<pre><code>{
+  "name": "incontrol-icons",
+  "categories": [
+    {
+      "category": "Navigation",
+      "slug": "navigation",
+      "icons": [
+        { "name": "icon-nav-left", "code": 61697, "unicode": "f101" }
+      ]
+    }
+  ],
+  "icons": [
+    { "name": "icon-logo", "code": 61698, "unicode": "f102" }
+  ]
+}</code></pre>
+  <p>Cada clave aparece solo si tiene iconos: el código que lea el JSON debe tratar <code>categories</code> e <code>icons</code> como opcionales.</p>
+
+  <h2 id="reglas">6. Reglas y validaciones</h2>
+  <p>Antes de copiar, el script comprueba lo siguiente. Si algo falla, <strong>no escribe nada</strong>.</p>
+  <ul>
+    <li><span class="ok">La fuente existe</span>: hay <code>fonts/&lt;fuente&gt;/icons.config.mjs</code>.</li>
+    <li><span class="ok">La fuente está generada</span>: existen los 8 archivos de <code>dist/</code> y <code>icons.json</code>.</li>
+    <li><span class="ok">El destino está fuera de <code>generate-fonts/</code></span>: la copia es para un proyecto, no para el generador.</li>
+    <li><span class="ok">No hay copia anterior</span>, o se pasó <code>--force</code>.</li>
+  </ul>
+  <p>Además:</p>
+  <ul>
+    <li>Si la ruta no existe, se crea.</li>
+    <li>
+      Solo se escriben esos 9 archivos. Nunca se borra nada: cualquier otro archivo en la carpeta
+      destino queda intacto.
+    </li>
+  </ul>
+
+  <h2 id="skill">7. Con Claude Code: <code>/exportar-iconos</code></h2>
+  <p>
+    El skill está en <code>generate-fonts/.claude/skills/exportar-iconos/</code>. Puedes invocarlo con
+    <code>/exportar-iconos</code> o pedirlo en lenguaje natural
+    (“exporta los iconos a C:/projects/mi-app/src/assets/fonts”).
+  </p>
+  <ol class="steps">
+    <li>Te pregunta, en un solo mensaje, el <strong>nombre de la carpeta</strong> (por defecto <code>incontrol-icons</code>) y la <strong>ruta</strong>.</li>
+    <li>Si la fuente no está generada, te ofrece ejecutar <code>npm run build -- &lt;fuente&gt;</code>.</li>
+    <li>Si ya hay una copia en el destino, te muestra qué archivos hay y pide confirmación antes de sobrescribirlos.</li>
+    <li>Ejecuta el comando con la ruta absoluta y te indica la carpeta resultante.</li>
+  </ol>
+  <div class="note">
+    El skill no modifica <code>angular.json</code> ni otros archivos del proyecto destino salvo que lo
+    pidas expresamente. Al estar dentro de <code>generate-fonts/</code>, puede que solo aparezca en una sesión
+    nueva de Claude Code.
+  </div>
+
+  <h2 id="proyecto">8. Usarlo en el proyecto</h2>
+  <p>El proyecto referencia <strong>la copia</strong>. En Angular, añade el CSS a <code>styles</code> en <code>angular.json</code>:</p>
+<pre><code>"styles": [
+  "src/styles.scss",
+  "src/assets/fonts/incontrol-icons/incontrol-icons.css"
+]</code></pre>
+  <p>
+    Angular copia los archivos de fuente automáticamente, porque el CSS los referencia con rutas relativas.
+    En cualquier plantilla:
+  </p>
+<pre><code>&lt;i class="icon-search"&gt;&lt;/i&gt;
+&lt;span class="icon-nav-left" aria-hidden="true"&gt;&lt;/span&gt;</code></pre>
+  <p>El tamaño y el color se heredan del texto:</p>
+<pre><code>.toolbar__icon {
+  font-size: 24px;
+  color: currentColor;
+}</code></pre>
+  <p>
+    Fuera de Angular basta con
+    <code>&lt;link rel="stylesheet" href="ruta/incontrol-icons/incontrol-icons.css"&gt;</code>.
+  </p>
+
+  <h2 id="actualizar">9. Actualizar iconos</h2>
+  <ol class="steps">
+    <li>En Figma, en el nodo registrado en <code>figma</code> de <code>icons.config.mjs</code>: <em>Outline stroke</em> + <em>Flatten</em> a los iconos nuevos o cambiados.</li>
+    <li>
+      Regenerar con <code>/generar-fuente</code> (lee Figma, actualiza <code>source/</code> y ejecuta el
+      build). Sin Claude: guardar los SVG en <code>generate-fonts/fonts/incontrol-icons/source/</code>
+      (en su carpeta de categoría o directos) y <code>npm run build -- incontrol-icons</code>.
+    </li>
+    <li>Revisar <code>dist/incontrol-icons.html</code>.</li>
+    <li>Volver a exportar con <code>--force</code> (o con <code>/exportar-iconos</code>, confirmando la sobrescritura).</li>
+  </ol>
+  <p>
+    Los iconos existentes conservan su código Unicode al añadir otros nuevos, así que las clases ya
+    usadas en el proyecto siguen funcionando.
+  </p>
+
+  <h2 id="errores">10. Mensajes de error</h2>
+  <div class="table-wrap">
+    <table>
+      <thead>
+        <tr><th>Mensaje</th><th>Causa</th><th>Solución</th></tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td class="err">Usage: node scripts/export-icons.mjs …</td>
+          <td>Falta la fuente o la ruta, o sobran argumentos.</td>
+          <td>Revisa el <code>--</code> tras <code>npm run export</code> y pon la ruta entre comillas si tiene espacios.</td>
+        </tr>
+        <tr>
+          <td class="err">Invalid folder name "…"</td>
+          <td><code>--folder</code> con caracteres no permitidos.</td>
+          <td>Usa solo letras, números, <code>.</code>, <code>_</code> y <code>-</code>.</td>
+        </tr>
+        <tr>
+          <td class="err">Unknown font "…"</td>
+          <td>No existe <code>fonts/&lt;fuente&gt;/icons.config.mjs</code>.</td>
+          <td>Revisa el nombre de la fuente (<code>incontrol-icons</code>).</td>
+        </tr>
+        <tr>
+          <td class="err">The font is not generated yet …</td>
+          <td>Faltan archivos en <code>dist/</code> o <code>icons.json</code>.</td>
+          <td>Ejecuta <code>npm run build -- &lt;fuente&gt;</code> en <code>generate-fonts/</code>.</td>
+        </tr>
+        <tr>
+          <td class="err">The destination … is inside generate-fonts/</td>
+          <td>La ruta apunta dentro de <code>generate-fonts/</code>.</td>
+          <td>Exporta a una carpeta del proyecto que usará los iconos.</td>
+        </tr>
+        <tr>
+          <td class="err">… already has a copy (…). Pass --force …</td>
+          <td>La carpeta destino ya tiene una exportación anterior.</td>
+          <td>Si quieres reemplazarla, repite el comando con <code>--force</code>.</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+</main>
+</body>
+</html>
