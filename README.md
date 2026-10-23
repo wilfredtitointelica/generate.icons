@@ -30,7 +30,7 @@ Desde `generate.icons/` (requiere Node ≥ 22):
 | `npm run sync -- <fuente> <manifiesto.json> [--dry-run]` | Igual, a partir de un manifiesto (alternativa sin token, con el MCP de Figma). |
 | `npm run build` | Genera **todas** las fuentes de `fonts/` (cada carpeta con `icons.config.mjs`). |
 | `npm run build -- <fuente> [<fuente>…]` | Genera solo esas fuentes, por ejemplo `npm run build -- incontrol-icons`. |
-| `npm run export -- <fuente> <ruta> [--folder <carpeta>] [--force]` | Copia una fuente generada a `<ruta>/<carpeta>/` (ver [Exportar a un proyecto](#exportar-a-un-proyecto)). |
+| `npm run export -- <fuente> <ruta> [<ruta>…] [--folder <carpeta>] [--force]` | Copia una fuente generada a `<ruta>/<carpeta>/`, en una o varias rutas (ver [Exportar a un proyecto](#exportar-a-un-proyecto)). |
 
 ## Estructura
 
@@ -261,7 +261,12 @@ npm run export -- incontrol-icons "C:/projects/mi-app/src/assets/fonts"
 # -> C:/projects/mi-app/src/assets/fonts/incontrol-icons/{incontrol-icons.css, ..., icons.json}
 
 npm run export -- incontrol-icons "C:/projects/mi-app/src/assets/fonts" --folder icons --force
+
+# varios proyectos a la vez (misma carpeta en todos)
+npm run export -- incontrol-icons "C:/projects/app-a/src/assets/fonts" "C:/projects/app-b/src/assets/fonts"
 ```
+
+- Con varias rutas, primero valida todas: si una falla, no escribe en ninguna.
 
 - Si la carpeta ya tiene una copia, no escribe nada salvo que pases `--force`. Los demás archivos de
   esa carpeta nunca se tocan.

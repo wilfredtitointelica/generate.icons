@@ -235,8 +235,8 @@
       "folder": "bookmark-favorite",
       "name": "Bookmark favorite",
       "icons": [
-        "icon-boookmark-off",
-        "icon-boookmark-on",
+        "icon-bookmark",
+        "icon-bookmark-on",
         "icon-favorite"
       ]
     },

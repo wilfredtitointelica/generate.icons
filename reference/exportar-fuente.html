@@ -61,7 +61,7 @@ npm run build   <span class="comment"># cada vez que cambian los SVG</span></cod
 
   <h2 id="comando">3. Comando</h2>
   <p>Desde la carpeta <code>generate.icons/</code>:</p>
-<pre><code>npm run export -- &lt;fuente&gt; &lt;ruta&gt; [--folder &lt;carpeta&gt;] [--force]</code></pre>
+<pre><code>npm run export -- &lt;fuente&gt; &lt;ruta&gt; [&lt;ruta&gt;…] [--folder &lt;carpeta&gt;] [--force]</code></pre>
   <p>El <code>--</code> después de <code>export</code> es obligatorio: separa los argumentos de npm de los del script.</p>
 
   <div class="table-wrap">
@@ -80,7 +80,8 @@ npm run build   <span class="comment"># cada vez que cambian los SVG</span></cod
           <td>Sí</td>
           <td>
             Carpeta <strong>donde se crea</strong> la carpeta de iconos. Mejor absoluta y entre comillas.
-            Si es relativa, se resuelve desde la carpeta donde ejecutas npm.
+            Si es relativa, se resuelve desde la carpeta donde ejecutas npm. Puedes pasar varias (una por
+            proyecto): primero se validan todas y, si una falla, no se escribe en ninguna.
           </td>
         </tr>
         <tr>
@@ -117,6 +118,14 @@ npm run build   <span class="comment"># cada vez que cambian los SVG</span></cod
   <h3>Actualizar una copia existente</h3>
 <pre><code>npm run export -- incontrol-icons "C:/projects/mi-app/src/assets/fonts" --force</code></pre>
   <p>Sobrescribe los 9 archivos. Cualquier otro archivo que hayas puesto en esa carpeta se conserva.</p>
+
+  <h3>Varios proyectos a la vez</h3>
+<pre><code>npm run export -- incontrol-icons "C:/projects/app-a/src/assets/fonts" "C:/projects/app-b/src/assets/fonts"</code></pre>
+  <p>
+    Crea <code>incontrol-icons/</code> en cada ruta, con el mismo nombre de carpeta en todas. Si una ya
+    tiene una copia (sin <code>--force</code>) o está dentro de <code>generate.icons/</code>, no se
+    escribe en ninguna.
+  </p>
 
   <h3>Desde otra carpeta, con ruta relativa</h3>
 <pre><code><span class="comment"># ejecutado desde C:/projects/mi-app</span>
@@ -251,7 +260,7 @@ npm --prefix C:/christian/projects/generate.icons run export -- incontrol-icons 
       <tbody>
         <tr>
           <td class="err">Usage: node scripts/export-icons.mjs …</td>
-          <td>Falta la fuente o la ruta, o sobran argumentos.</td>
+          <td>Falta la fuente o la ruta.</td>
           <td>Revisa el <code>--</code> tras <code>npm run export</code> y pon la ruta entre comillas si tiene espacios.</td>
         </tr>
         <tr>

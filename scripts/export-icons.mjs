@@ -1,16 +1,19 @@
-// Copies a generated icon font to a project folder, so projects use the copy and never reference
-// generate.icons/:
+// Copies a generated icon font to one or more project folders, so projects use the copy and never
+// reference generate.icons/:
 //   <destination>/<folder>/<name>.{css,eot,html,json,svg,ttf,woff,woff2}   (from fonts/<font>/dist/)
 //   <destination>/<folder>/icons.json                                      (categories -> icons)
 // Other files already in <destination>/<folder>/ are left untouched. If the folder already holds a
 // previous copy, nothing is written unless --force is passed (then those files are overwritten).
+// With several destinations, all of them are checked first: if one fails, nothing is written anywhere.
 //
-//   node scripts/export-icons.mjs <font> <destination> [--folder <name>] [--force]
+//   node scripts/export-icons.mjs <font> <destination> [<destination>...] [--folder <name>] [--force]
 //   npm run export -- incontrol-icons ../my-app/src/assets/fonts
 //   npm run export -- incontrol-icons C:/projects/my-app/src/fonts --folder icons --force
+//   npm run export -- incontrol-icons C:/projects/app-a/src/assets/fonts C:/projects/app-b/src/assets/fonts
 //
-// <font> is a folder of fonts/ (incontrol-icons). <folder> defaults to the font folder name.
-// A relative <destination> is resolved from the folder where npm was run (INIT_CWD), else the cwd.
+// <font> is a folder of fonts/ (incontrol-icons). <folder> defaults to the font folder name and is the
+// same in every destination. A relative <destination> is resolved from the folder where npm was run
+// (INIT_CWD), else the cwd.
 import { copyFileSync, existsSync, mkdirSync, readdirSync } from 'node:fs';
 import { basename, isAbsolute, join, relative, resolve } from 'node:path';
 import { pathToFileURL } from 'node:url';
@@ -35,14 +38,14 @@ function parseArgs(argv) {
     else if (argv[i] === '--force') force = true;
     else positional.push(argv[i]);
   }
-  const [font, destination] = positional;
-  if (!font || !destination || positional.length > 2 || (folder !== undefined && !folder)) {
-    fail('Usage: node scripts/export-icons.mjs <font> <destination> [--folder <name>] [--force]');
+  const [font, ...destinations] = positional;
+  if (!font || !destinations.length || (folder !== undefined && !folder)) {
+    fail('Usage: node scripts/export-icons.mjs <font> <destination> [<destination>...] [--folder <name>] [--force]');
   }
-  return { font, destination, folder: folder ?? font, force };
+  return { font, destinations, folder: folder ?? font, force };
 }
 
-const { font, destination, folder, force } = parseArgs(process.argv.slice(2));
+const { font, destinations, folder, force } = parseArgs(process.argv.slice(2));
 if (!FOLDER_NAME.test(folder)) fail(`Invalid folder name "${folder}": use letters, digits, ".", "_" or "-".`);
 
 const fontDir = join(FONTS_DIR, font);
@@ -59,20 +62,25 @@ if (missing.length) {
   fail(`The font is not generated yet (missing ${missing.length} files). Run "npm run build -- ${font}" in generate.icons/ first.`);
 }
 
-const target = resolve(process.env.INIT_CWD ?? process.cwd(), destination, folder);
-const insideGenerator = relative(ROOT, target);
-if (!insideGenerator.startsWith('..') && !isAbsolute(insideGenerator)) {
-  fail(`The destination ${target} is inside generate.icons/: export to a folder of the project that uses the icons.`);
-}
-
+const base = process.env.INIT_CWD ?? process.cwd();
+const targets = [...new Set(destinations.map((destination) => resolve(base, destination, folder)))];
 const names = sources.map((path) => basename(path));
-if (existsSync(target) && !force) {
-  const existing = readdirSync(target).filter((name) => names.includes(name));
-  if (existing.length) {
-    fail(`${target} already has a copy (${existing.join(', ')}). Pass --force to overwrite it.`);
+const problems = [];
+for (const target of targets) {
+  const insideGenerator = relative(ROOT, target);
+  if (!insideGenerator.startsWith('..') && !isAbsolute(insideGenerator)) {
+    problems.push(`The destination ${target} is inside generate.icons/: export to a folder of the project that uses the icons.`);
+  } else if (existsSync(target) && !force) {
+    const existing = readdirSync(target).filter((name) => names.includes(name));
+    if (existing.length) problems.push(`${target} already has a copy (${existing.join(', ')}). Pass --force to overwrite it.`);
   }
 }
+if (problems.length) {
+  fail(problems.join('\n') + (targets.length > 1 ? '\nNothing was written in any destination.' : ''));
+}
 
-mkdirSync(target, { recursive: true });
-for (const source of sources) copyFileSync(source, join(target, basename(source)));
-console.log(`[export-icons] ${config.name}: ${sources.length} files -> ${target}`);
+for (const target of targets) {
+  mkdirSync(target, { recursive: true });
+  for (const source of sources) copyFileSync(source, join(target, basename(source)));
+  console.log(`[export-icons] ${config.name}: ${sources.length} files -> ${target}`);
+}

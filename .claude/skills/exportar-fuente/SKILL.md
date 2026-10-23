@@ -33,7 +33,9 @@ chat, **todo en un solo mensaje**:
 2. **Nombre de la carpeta** a crear o actualizar. Por defecto, el de la fuente (`incontrol-icons`).
    Solo letras, números, `.`, `_` y `-`.
 3. **Ruta** donde se crea la carpeta, por ejemplo `C:/projects/mi-app/src/assets/fonts`. Puede ser
-   cualquier carpeta o repositorio; para varios, se exporta a cada uno por turno. Si es relativa, se
+   cualquier carpeta o repositorio, y **varias a la vez** (una por proyecto): se exportan todas con un
+   solo comando y la misma carpeta. Si el usuario quiere otro nombre de carpeta en alguna, esa va en un
+   comando aparte. Si es relativa, se
    resuelve desde la raíz de `generate.icons/` y se le muestra al usuario la ruta absoluta resultante. Debe estar **fuera** de `generate.icons/`.
 
 ## 2. Validar antes de copiar
@@ -44,28 +46,28 @@ chat, **todo en un solo mensaje**:
 
   Si acepta, ejecútalo desde `generate.icons/`. Si el build falla (por ejemplo, `source/` sin SVG),
   muestra el error y no continúes.
-- **La ruta destino existe** (la carpeta padre). Si no existe, pregunta si se crea; el script la crea
-  con la copia.
-- **Copia anterior**: si `<ruta>/<carpeta>/` ya tiene alguno de esos 9 archivos, muestra cuáles y
-  pregunta si se sobrescriben. Solo con un sí se pasa `--force`. Los demás archivos de esa carpeta no
-  se tocan nunca.
+- **La ruta destino existe** (la carpeta padre), en cada ruta. Si no existe, pregunta si se crea; el
+  script la crea con la copia.
+- **Copia anterior**: si `<ruta>/<carpeta>/` ya tiene alguno de esos 9 archivos, muestra cuáles (por
+  ruta) y pregunta **una sola vez** si se sobrescriben. Solo con un sí se pasa `--force`. Los demás
+  archivos de esa carpeta no se tocan nunca.
 
 ## 3. Copiar
 
 Desde `generate.icons/` (si no hay `node_modules`, antes `npm ci`):
 
 ```bash
-npm run export -- <fuente> "<ruta-absoluta>" --folder <carpeta> [--force]
+npm run export -- <fuente> "<ruta-absoluta>" ["<otra-ruta-absoluta>" …] --folder <carpeta> [--force]
 ```
 
-Pasa siempre la ruta **absoluta** y entre comillas. El script vuelve a validar lo anterior y no escribe
-nada si algo falla.
+Pasa siempre las rutas **absolutas** y entre comillas. El script vuelve a validar lo anterior en todas
+las rutas y, si alguna falla, no escribe en ninguna.
 
 ## 4. Responder
 
 En pocas líneas:
 
-- Ruta absoluta de la carpeta creada o actualizada y los 9 archivos copiados.
+- Ruta absoluta de cada carpeta creada o actualizada y los 9 archivos copiados.
 - Si se sobrescribió una copia anterior, decirlo.
 - Recordar que el proyecto debe referenciar **la copia**, nunca `generate.icons/`. No modifiques
   `angular.json` ni otros archivos del proyecto destino salvo que el usuario lo pida y diga la ruta.

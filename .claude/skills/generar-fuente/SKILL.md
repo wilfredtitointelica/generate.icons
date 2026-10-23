@@ -113,8 +113,10 @@ estricto), las **instancias omitidas** y los **añadidos / movidos / eliminados*
   confirmación: su SVG se mueve a `fonts/<fuente>/trash/` (ver [Papelera](#papelera-trash)). Solo
   informa cuáles se eliminan.
 
-Resume eso al usuario y continúa salvo duplicados o nombres raros (erratas, espacios), que conviene
-corregir en Figma primero (pregunta si sigue o espera).
+Resume eso al usuario y continúa salvo duplicados o erratas, que conviene corregir en Figma primero
+(pregunta si sigue o espera). Los espacios y los guiones repetidos en los nombres no paran nada: se
+convierten en un solo guion (ver
+*Nombre* en [Mapeo Figma → source/](#mapeo-figma--source)).
 
 ### Papelera (trash/)
 
@@ -170,7 +172,19 @@ las aplicas tú.
 - **Sin categoría**: los iconos que son hijos directos del nodo de la URL. Si el nodo no tiene grupos,
   todos los iconos quedan sin categoría (source/ plano).
 - **Nombre**: el nombre de la capa del icono; si tiene `/` (`icons/arrow-left`), solo el último tramo.
-  El script lo normaliza a `<prefijo>-<kebab-case>` (`Arrow Left` → `icon-arrow-left`).
+  El script lo normaliza a `<prefijo>-<kebab-case>` (`Arrow Left` → `icon-arrow-left`). Con los
+  espacios:
+  - Espacios al inicio o al final se quitan.
+  - Un espacio entre palabras pasa a guion: `icon-dashboard interchange-plus` →
+    `icon-dashboard-interchange-plus`.
+  - Un espacio junto a un guion solo se quita (no se duplica el guion): `icon-arrow -left` y
+    `icon-arrow - left` → `icon-arrow-left`.
+  - Dos o más guiones seguidos quedan en uno: `icon--arrow-left`, `icon-arrow---left` →
+    `icon-arrow-left`. Los guiones al inicio o al final se quitan (`icon-arrow-left--` →
+    `icon-arrow-left`).
+
+  No hace falta corregir esas capas en Figma ni preguntar: salen en *renombrados* del `--dry-run`;
+  menciónalas en el resumen.
 - **Orden** (el del lienzo, para que el diseñador compare): calcula la posición **absoluta** de cada
   nodo (sumando `x`/`y` de sus ancestros) y ordena en lectura: de arriba abajo y, en una misma fila
   (tops a menos de ~4 px), de izquierda a derecha. Primero las categorías, y dentro de cada una sus

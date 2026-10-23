@@ -777,14 +777,14 @@
       "slug": "bookmark-favorite",
       "icons": [
         {
-          "name": "icon-boookmark-off",
-          "code": 61723,
-          "unicode": "f11b"
+          "name": "icon-bookmark",
+          "code": 61884,
+          "unicode": "f1bc"
         },
         {
-          "name": "icon-boookmark-on",
-          "code": 61724,
-          "unicode": "f11c"
+          "name": "icon-bookmark-on",
+          "code": 61885,
+          "unicode": "f1bd"
         },
         {
           "name": "icon-favorite",

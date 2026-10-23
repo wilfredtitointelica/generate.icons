@@ -6,6 +6,20 @@
       "category": "Icon Merchant Profitability",
       "codepoint": 61820,
       "removedAt": "2026-10-23"
+    },
+    {
+      "name": "icon-boookmark-off",
+      "file": "bookmark-favorite/icon-boookmark-off.svg",
+      "category": "Bookmark favorite",
+      "codepoint": 61723,
+      "removedAt": "2026-10-23"
+    },
+    {
+      "name": "icon-boookmark-on",
+      "file": "bookmark-favorite/icon-boookmark-on.svg",
+      "category": "Bookmark favorite",
+      "codepoint": 61724,
+      "removedAt": "2026-10-23"
     }
   ]
 }
