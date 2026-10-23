@@ -8,9 +8,10 @@ tal cual. Admite varias fuentes (`incontrol-icons`, `incontrol-system`, …), ca
 (copia) a una carpeta del proyecto, y el proyecto usa esa copia (ver
 [Exportar a un proyecto](#exportar-a-un-proyecto)).
 
-Guías en HTML (ábrelas en el navegador): [reference/index.html](reference/index.html), con
-[generar una fuente](reference/generar-fuente.html),
-[conectar con Figma (token)](reference/configurar-token.html) y
+Guías en HTML (ábrelas en el navegador): [reference/index.html](reference/index.html), con una
+[guía rápida](reference/guia-rapida.html) (conectar y usar las skills, paso a paso),
+[configurar y conectar con Figma (token)](reference/configurar-token.html) (lo primero tras clonar),
+[generar una fuente](reference/generar-fuente.html) y
 [exportar fuente](reference/exportar-fuente.html).
 
 Herramienta: [fantasticon](https://github.com/tancredi/fantasticon) 4.1.0, con un parche en

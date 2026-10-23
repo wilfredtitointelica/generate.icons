@@ -8,50 +8,124 @@
 </head>
 <body>
 <main>
-  <h1>Referencia de generate.icons</h1>
-  <p class="lead">
-    Guías del generador de fuentes de iconos: de Figma (o de una carpeta de SVG) a <code>dist/</code>, y de
-    <code>dist/</code> al proyecto. El detalle de todos los comandos está en
-    <code>generate.icons/README.md</code>.
-  </p>
+  <header class="hero">
+    <p class="eyebrow">generate.icons · Referencia</p>
+    <h1>Fuentes de iconos, de Figma al proyecto</h1>
+    <p class="lead">
+      Guías del generador de fuentes de iconos: de Figma (o de una carpeta de SVG) a <code>dist/</code>, y de
+      <code>dist/</code> al proyecto. El detalle de todos los comandos está en
+      <code>generate.icons/README.md</code>.
+    </p>
+  </header>
 
+  <a class="quick" href="guia-rapida.html">
+    <span class="quick-icon">⚡</span>
+    <span>
+      <strong>¿Solo quieres actualizar los iconos?</strong>
+      <span>Guía rápida: conectar con Figma y usar <code>/generar-fuente</code> y <code>/exportar-fuente</code>, paso a paso.</span>
+    </span>
+    <span class="quick-go">Abrir →</span>
+  </a>
+
+  <section class="start" aria-labelledby="start-title">
+    <div class="start-head">
+      <span class="badge">Empieza aquí</span>
+      <h2 id="start-title">Después de clonar el repositorio</h2>
+    </div>
+    <p class="start-intro">
+      Se hace una sola vez por equipo, desde <code>generate.icons/</code>. El token solo hace falta para
+      fuentes que vienen de Figma.
+    </p>
+    <ol class="checklist">
+      <li>
+        <strong>Node.js 22 o superior</strong>
+        <code>node -v</code>
+      </li>
+      <li>
+        <strong>Instalar dependencias</strong>
+        <span>Instala las versiones fijadas y aplica el parche de fantasticon.</span>
+        <code>npm ci</code>
+      </li>
+      <li>
+        <strong>Token de Figma en <code>.env</code></strong>
+        <span>Copia la plantilla y pega tu token personal (<em>File content: Read-only</em>). <code>.env</code> no se sube.</span>
+        <code>cp .env.example .env</code>
+      </li>
+      <li>
+        <strong>Probar la conexión</strong>
+        <span>Simulación: solo lee de Figma, no escribe nada.</span>
+        <code>npm run pull -- incontrol-icons --dry-run</code>
+      </li>
+    </ol>
+    <a class="button" href="configurar-token.html">Guía de configuración y token →</a>
+  </section>
+
+  <h2>Guías</h2>
   <div class="cards">
+    <a class="card" href="configurar-token.html">
+      <span class="card-num">1</span>
+      <strong>Configurar y conectar con Figma</strong>
+      <span>Crear el token, guardarlo en <code>.env</code>, probar la conexión y renovarlo cuando caduque.</span>
+    </a>
     <a class="card" href="generar-fuente.html">
-      <strong>1. Generar fuente</strong>
+      <span class="card-num">2</span>
+      <strong>Generar fuente</strong>
       <span>Desde Figma o desde SVG copiados en <code>source/</code>, con <code>/generar-fuente</code> o con comandos.</span>
     </a>
-    <a class="card" href="configurar-token.html">
-      <strong>2. Conectar con Figma (token)</strong>
-      <span>Solo para fuentes de Figma: crear el token, guardarlo en <code>.env</code> y probar la conexión.</span>
-    </a>
     <a class="card" href="exportar-fuente.html">
-      <strong>3. Exportar fuente</strong>
+      <span class="card-num">3</span>
+      <strong>Exportar fuente</strong>
       <span>Copiar una fuente generada a la carpeta de un proyecto y usarla en Angular.</span>
     </a>
   </div>
 
   <h2>Flujo completo</h2>
-<pre><code>Figma ── npm run pull (token)          SVG compartidos ── copiar a mano
-                     │                                   │
-                     └──────────────┬────────────────────┘
-                                    ▼
-                        fonts/&lt;fuente&gt;/source/
-                                    │  npm run build
-                                    ▼
-                  fonts/&lt;fuente&gt;/dist/ + icons.json
-                                    │  npm run export (copia)
-                                    ▼
-                                 proyecto</code></pre>
+  <div class="flow" role="img" aria-label="Configurar el token; Figma con npm run pull o SVG copiados a mano llegan a source/; npm run build genera dist/ e icons.json; npm run export los copia al proyecto.">
+    <div class="flow-node flow-setup">
+      <span class="flow-tag">Una vez</span>
+      <code>.env · FIGMA_TOKEN</code>
+    </div>
+    <div class="flow-edge"><span>habilita</span></div>
+    <div class="flow-split">
+      <div class="flow-node">
+        <span class="flow-tag">Figma</span>
+        <code>npm run pull</code>
+      </div>
+      <div class="flow-or">o</div>
+      <div class="flow-node">
+        <span class="flow-tag">SVG compartidos</span>
+        <code>copiar a mano</code>
+      </div>
+    </div>
+    <div class="flow-edge"></div>
+    <div class="flow-node">
+      <span class="flow-tag">Fuente</span>
+      <code>fonts/&lt;fuente&gt;/source/</code>
+    </div>
+    <div class="flow-edge"><code>npm run build</code></div>
+    <div class="flow-node">
+      <span class="flow-tag">Generado</span>
+      <code>fonts/&lt;fuente&gt;/dist/ + icons.json</code>
+    </div>
+    <div class="flow-edge"><code>npm run export</code></div>
+    <div class="flow-node flow-end">
+      <span class="flow-tag">Destino</span>
+      <code>proyecto</code>
+    </div>
+  </div>
+
   <ol class="steps">
+    <li><a href="configurar-token.html">Configurar</a> el entorno y el token de Figma (una vez).</li>
     <li>
-      <a href="generar-fuente.html">Generar la fuente</a>: de Figma (<a href="configurar-token.html">con
-      token</a>, <code>npm run pull</code>) o copiando los SVG en <code>source/</code>, y
-      <code>npm run build -- &lt;fuente&gt;</code>.
+      <a href="generar-fuente.html">Generar la fuente</a>: de Figma (<code>npm run pull</code>) o copiando los
+      SVG en <code>source/</code>, y <code>npm run build -- &lt;fuente&gt;</code>.
     </li>
     <li>Revisar la vista previa <code>fonts/&lt;fuente&gt;/dist/&lt;fuente&gt;.html</code>.</li>
     <li><a href="exportar-fuente.html">Exportar</a> la fuente al proyecto.</li>
   </ol>
-  <p>Con Claude Code: <code>/generar-fuente</code> (pasos 1 y 2) y <code>/exportar-fuente</code> (paso 3).</p>
+  <div class="note">
+    Con Claude Code: <code>/generar-fuente</code> (pasos 2 y 3) y <code>/exportar-fuente</code> (paso 4).
+  </div>
 </main>
 </body>
 </html>

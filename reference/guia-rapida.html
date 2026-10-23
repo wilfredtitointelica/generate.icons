@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Guía rápida</title>
+  <link rel="stylesheet" href="reference.css">
+</head>
+<body>
+<main>
+  <p class="crumb"><a href="index.html">← Referencia de generate.icons</a></p>
+  <h1>Guía rápida</h1>
+  <p class="lead">
+    Lo mínimo para actualizar los iconos y llevarlos a tu proyecto. Primero conectas con Figma (una sola
+    vez) y después le pides a Claude Code que haga el resto.
+  </p>
+
+  <h2>Parte 1 · Conectar con Figma <span class="tag">una sola vez</span></h2>
+  <ol class="steps">
+    <li>
+      Abre una terminal en la carpeta <code>generate.icons</code> y ejecuta:
+<pre><code>npm ci</code></pre>
+    </li>
+    <li>
+      En Figma: tu avatar → <strong>Settings</strong> → <strong>Security</strong> →
+      <strong>Generate new token</strong>. Marca solo <strong>File content: Read-only</strong> y
+      <strong>copia el token</strong> (Figma lo muestra una sola vez).
+    </li>
+    <li>
+      En <code>generate.icons</code>, haz una copia de <code>.env.example</code> y llámala <code>.env</code>.
+      Ábrela y pega tu token:
+<pre><code>FIGMA_TOKEN=figd_tu_token_aqui</code></pre>
+    </li>
+    <li>
+      Comprueba que funciona:
+<pre><code>npm run pull -- incontrol-icons --dry-run</code></pre>
+      Si ves la lista de categorías e iconos, <span class="ok">ya estás conectado</span>.
+    </li>
+  </ol>
+  <div class="note">
+    El archivo <code>.env</code> no se sube al repositorio: tu token se queda solo en tu PC.
+  </div>
+
+  <h2>Parte 2 · Usar las skills en Claude Code</h2>
+  <p>Abre Claude Code en la carpeta <code>generate.icons</code> y escribe el comando. Claude te hace las preguntas que falten.</p>
+
+  <h3>Actualizar los iconos desde Figma</h3>
+  <ol class="steps">
+    <li>Escribe <code>/generar-fuente</code>.</li>
+    <li>Responde: fuente <strong>existente</strong> → <strong>incontrol-icons</strong>.</li>
+    <li>
+      Claude descarga los iconos y genera la fuente. Revisa el resultado abriendo en el navegador
+      <code>fonts/incontrol-icons/dist/incontrol-icons.html</code>.
+    </li>
+  </ol>
+
+  <h3>Llevar los iconos a tu proyecto</h3>
+  <ol class="steps">
+    <li>Escribe <code>/exportar-fuente</code>.</li>
+    <li>
+      Responde el <strong>nombre de la carpeta</strong> (por defecto <code>incontrol-icons</code>) y la
+      <strong>ruta</strong> de tu proyecto, por ejemplo <code>C:/projects/mi-app/src/assets/fonts</code>.
+    </li>
+    <li>Si ya había una copia, confirma que se sobrescriba. Listo: tu proyecto ya tiene los iconos nuevos.</li>
+  </ol>
+
+  <div class="note">
+    También puedes pedirlo con tus palabras, por ejemplo: <em>“actualiza los iconos desde Figma y
+    llévalos a C:/projects/mi-app/src/assets/fonts”</em>.
+  </div>
+
+  <p class="comment">
+    ¿Algo falla o necesitas más detalle? Mira las guías completas:
+    <a href="configurar-token.html">Conectar con Figma</a>,
+    <a href="generar-fuente.html">Generar fuente</a> y
+    <a href="exportar-fuente.html">Exportar fuente</a>.
+  </p>
+</main>
+</body>
+</html>
