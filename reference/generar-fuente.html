@@ -8,12 +8,12 @@
 </head>
 <body>
 <main>
-  <p class="crumb"><a href="index.html">← Referencia de generate-fonts</a></p>
+  <p class="crumb"><a href="index.html">← Referencia de generate.icons</a></p>
   <h1>Generar una fuente</h1>
   <p class="lead">
     Cómo crear o regenerar una fuente de iconos desde su <strong>Figma</strong> o desde una
     <strong>carpeta de SVG</strong> que alguien te compartió, con el skill <code>/generar-fuente</code> o
-    con los comandos de <code>generate-fonts/</code>.
+    con los comandos de <code>generate.icons/</code>.
   </p>
 
   <nav aria-label="Contenido">
@@ -32,7 +32,7 @@
 
   <h2 id="origenes">1. Dos orígenes</h2>
   <p>
-    Cada fuente vive en <code>generate-fonts/fonts/&lt;fuente&gt;/</code> y registra en su
+    Cada fuente vive en <code>generate.icons/fonts/&lt;fuente&gt;/</code> y registra en su
     <code>icons.config.mjs</code> <strong>de dónde salen sus iconos</strong> (campo <code>origin</code>):
   </p>
   <div class="table-wrap">
@@ -60,7 +60,7 @@ origin 'local':  SVG ────── copiar a mano ──▶ source/ ── n
 
   <h2 id="skill">2. Con Claude Code: <code>/generar-fuente</code></h2>
   <p>
-    El skill está en <code>generate-fonts/.claude/skills/generar-fuente/</code>. Invócalo con
+    El skill está en <code>generate.icons/.claude/skills/generar-fuente/</code>. Invócalo con
     <code>/generar-fuente</code> o en lenguaje natural: “regenera incontrol-icons”, “crea una fuente nueva
     desde Figma”, “ya copié los SVG en source de shared-icons, genérala”.
   </p>
@@ -85,13 +85,12 @@ origin 'local':  SVG ────── copiar a mano ──▶ source/ ── n
     </li>
   </ol>
   <div class="note">
-    Al estar dentro de <code>generate-fonts/</code>, el skill puede que solo aparezca en una sesión nueva de
-    Claude Code. Sin Claude, los comandos de las secciones 3 y 4 hacen lo mismo.
+    El skill aparece en las sesiones de Claude Code abiertas en <code>generate.icons/</code>. Sin Claude, los comandos de las secciones 3 y 4 hacen lo mismo.
   </div>
 
   <h2 id="figma">3. Origen Figma</h2>
   <h3>Crear la fuente</h3>
-<pre><code>cd generate-fonts
+<pre><code>cd generate.icons
 npm run new -- incontrol-system --figma "https://www.figma.com/design/&lt;file&gt;/&lt;nombre&gt;?node-id=12-34" --prefix sys --filter sys-</code></pre>
   <ul>
     <li><code>--figma</code>: enlace al frame o sección de iconos, con <code>node-id</code> (en Figma: <em>Copy link to selection</em>).</li>
@@ -111,7 +110,7 @@ npm run build -- incontrol-system</code></pre>
   <h3>Crear la fuente</h3>
 <pre><code>npm run new -- shared-icons --local --prefix icon</code></pre>
   <h3>Copiar los SVG</h3>
-  <p>Copia lo que te compartieron en <code>generate-fonts/fonts/shared-icons/source/</code>, tal como venga:</p>
+  <p>Copia lo que te compartieron en <code>generate.icons/fonts/shared-icons/source/</code>, tal como venga:</p>
 <pre><code>source/
 ├── Navigation/            <span class="comment"># carpeta = categoría</span>
 │   ├── Arrow Left.svg     <span class="comment"># → icon-arrow-left</span>

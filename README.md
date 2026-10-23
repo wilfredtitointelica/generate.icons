@@ -1,10 +1,10 @@
-# generate-fonts
+# generate.icons
 
 Generador de fuentes de iconos a partir de SVG, extraídos de Figma o copiados a mano. La carpeta es autocontenida
 (su propio `package.json`, dependencias, scripts y configuración): se puede copiar a otro repositorio
 tal cual. Admite varias fuentes (`incontrol-icons`, `incontrol-system`, …), cada una en `fonts/<fuente>/`.
 
-**`generate-fonts/` solo genera.** Ningún proyecto la referencia: la fuente generada se **exporta**
+**`generate.icons/` solo genera.** Ningún proyecto la referencia: la fuente generada se **exporta**
 (copia) a una carpeta del proyecto, y el proyecto usa esa copia (ver
 [Exportar a un proyecto](#exportar-a-un-proyecto)).
 
@@ -18,7 +18,7 @@ Herramienta: [fantasticon](https://github.com/tancredi/fantasticon) 4.1.0, con u
 
 ## Comandos
 
-Desde `generate-fonts/` (requiere Node ≥ 22):
+Desde `generate.icons/` (requiere Node ≥ 22):
 
 | Comando | Qué hace |
 |---|---|
@@ -34,7 +34,7 @@ Desde `generate-fonts/` (requiere Node ≥ 22):
 ## Estructura
 
 ```
-generate-fonts/
+generate.icons/
 ├── package.json · package-lock.json
 ├── .env.example                   # copiar a .env con FIGMA_TOKEN (.env no se sube)
 ├── patches/fantasticon+4.1.0.patch
@@ -135,7 +135,7 @@ La extracción usa la **API REST de Figma** con un token personal de solo lectur
 
 1. En Figma: **Settings → Security → Personal access tokens → Generate new token**, con el scope
    *File content: read-only*.
-2. Copia `.env.example` a `.env` (en `generate-fonts/`) y pon `FIGMA_TOKEN=<token>`. El `.env` está en
+2. Copia `.env.example` a `.env` (en `generate.icons/`) y pon `FIGMA_TOKEN=<token>`. El `.env` está en
    `.gitignore`: no se sube nunca. También vale la variable de entorno `FIGMA_TOKEN`.
 
 El token es **de tu cuenta, no de un archivo**: uno solo sirve para todas las fuentes, y cada fuente
@@ -264,7 +264,7 @@ npm run export -- incontrol-icons "C:/projects/mi-app/src/assets/fonts" --folder
 
 - Si la carpeta ya tiene una copia, no escribe nada salvo que pases `--force`. Los demás archivos de
   esa carpeta nunca se tocan.
-- Falla si la fuente aún no está generada o si el destino está dentro de `generate-fonts/`.
+- Falla si la fuente aún no está generada o si el destino está dentro de `generate.icons/`.
 - Una ruta relativa se resuelve desde la carpeta donde ejecutas npm.
 
 Con Claude Code: **`/exportar-fuente`** (skill en `.claude/skills/exportar-fuente/`) te pregunta la

@@ -16,7 +16,7 @@
 //   left to right; categories first, then the icons of each one.
 // --dry-run prints the summary (categories, filtered out, renamed, added / moved / removed) and exits
 // without exporting. Needs FIGMA_TOKEN (personal access token, File content: read-only), from the
-// environment or from generate-fonts/.env.
+// environment or from generate.icons/.env.
 import { existsSync } from 'node:fs';
 import { join } from 'node:path';
 
@@ -50,7 +50,7 @@ function readToken() {
   if (!token) {
     fail(
       'Missing FIGMA_TOKEN. Create a personal access token in Figma (Settings -> Security -> Personal ' +
-        'access tokens, scope "File content: read-only") and save it in generate-fonts/.env as ' +
+        'access tokens, scope "File content: read-only") and save it in generate.icons/.env as ' +
         'FIGMA_TOKEN=<token> (see .env.example). Never commit it.',
     );
   }

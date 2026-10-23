@@ -1,5 +1,5 @@
 // Copies a generated icon font to a project folder, so projects use the copy and never reference
-// generate-fonts/:
+// generate.icons/:
 //   <destination>/<folder>/<name>.{css,eot,html,json,svg,ttf,woff,woff2}   (from fonts/<font>/dist/)
 //   <destination>/<folder>/icons.json                                      (categories -> icons)
 // Other files already in <destination>/<folder>/ are left untouched. If the folder already holds a
@@ -56,13 +56,13 @@ const sources = [
 ];
 const missing = sources.filter((path) => !existsSync(path));
 if (missing.length) {
-  fail(`The font is not generated yet (missing ${missing.length} files). Run "npm run build -- ${font}" in generate-fonts/ first.`);
+  fail(`The font is not generated yet (missing ${missing.length} files). Run "npm run build -- ${font}" in generate.icons/ first.`);
 }
 
 const target = resolve(process.env.INIT_CWD ?? process.cwd(), destination, folder);
 const insideGenerator = relative(ROOT, target);
 if (!insideGenerator.startsWith('..') && !isAbsolute(insideGenerator)) {
-  fail(`The destination ${target} is inside generate-fonts/: export to a folder of the project that uses the icons.`);
+  fail(`The destination ${target} is inside generate.icons/: export to a folder of the project that uses the icons.`);
 }
 
 const names = sources.map((path) => basename(path));

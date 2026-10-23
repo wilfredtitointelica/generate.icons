@@ -8,10 +8,10 @@
 </head>
 <body>
 <main>
-  <p class="crumb"><a href="index.html">← Referencia de generate-fonts</a></p>
+  <p class="crumb"><a href="index.html">← Referencia de generate.icons</a></p>
   <h1>Exportar fuente</h1>
   <p class="lead">
-    Cómo copiar una fuente de iconos generada en <code>generate-fonts/</code> a la carpeta de un proyecto con
+    Cómo copiar una fuente de iconos generada en <code>generate.icons/</code> a la carpeta de un proyecto con
     <code>scripts/export-icons.mjs</code> (o con el skill <code>/exportar-fuente</code>).
   </p>
 
@@ -32,14 +32,14 @@
 
   <h2 id="por-que">1. Por qué exportar</h2>
   <p>
-    <code>generate-fonts/</code> <strong>solo genera</strong> fuentes: tiene sus propias dependencias y no forma
-    parte de ninguna aplicación. Ningún proyecto debe referenciar archivos dentro de <code>generate-fonts/</code>.
+    <code>generate.icons/</code> <strong>solo genera</strong> fuentes: tiene sus propias dependencias y no forma
+    parte de ninguna aplicación. Ningún proyecto debe referenciar archivos dentro de <code>generate.icons/</code>.
   </p>
   <p>
     En su lugar, la fuente generada se <strong>copia</strong> a una carpeta del proyecto, y el proyecto
-    usa esa copia. Así el proyecto no depende de dónde esté <code>generate-fonts/</code> ni de sus dependencias.
+    usa esa copia. Así el proyecto no depende de dónde esté <code>generate.icons/</code> ni de sus dependencias.
   </p>
-<pre><code>generate-fonts/fonts/incontrol-icons/dist/  +  icons.json
+<pre><code>generate.icons/fonts/incontrol-icons/dist/  +  icons.json
             │
             │  npm run export
             ▼
@@ -48,19 +48,19 @@
   <h2 id="requisitos">2. Requisitos</h2>
   <ul>
     <li>Node.js 22 o superior.</li>
-    <li>Dependencias instaladas en <code>generate-fonts/</code> (solo la primera vez): <code>npm ci</code>.</li>
+    <li>Dependencias instaladas en <code>generate.icons/</code> (solo la primera vez): <code>npm ci</code>.</li>
     <li>
       La fuente <strong>generada</strong>: SVG en <code>fonts/&lt;fuente&gt;/source/</code> (en carpetas de categoría o directos)
       y <code>npm run build</code> (todas) o <code>npm run build -- &lt;fuente&gt;</code> ejecutado. La
       exportación no genera; copia lo que ya hay en <code>dist/</code>.
     </li>
   </ul>
-<pre><code>cd generate-fonts
+<pre><code>cd generate.icons
 npm ci          <span class="comment"># solo la primera vez</span>
 npm run build   <span class="comment"># cada vez que cambian los SVG</span></code></pre>
 
   <h2 id="comando">3. Comando</h2>
-  <p>Desde la carpeta <code>generate-fonts/</code>:</p>
+  <p>Desde la carpeta <code>generate.icons/</code>:</p>
 <pre><code>npm run export -- &lt;fuente&gt; &lt;ruta&gt; [--folder &lt;carpeta&gt;] [--force]</code></pre>
   <p>El <code>--</code> después de <code>export</code> es obligatorio: separa los argumentos de npm de los del script.</p>
 
@@ -73,7 +73,7 @@ npm run build   <span class="comment"># cada vez que cambian los SVG</span></cod
         <tr>
           <td><code>&lt;fuente&gt;</code></td>
           <td>Sí</td>
-          <td>Carpeta de la fuente dentro de <code>generate-fonts/fonts/</code>: <code>incontrol-icons</code>, <code>incontrol-system</code>, …</td>
+          <td>Carpeta de la fuente dentro de <code>generate.icons/fonts/</code>: <code>incontrol-icons</code>, <code>incontrol-system</code>, …</td>
         </tr>
         <tr>
           <td><code>&lt;ruta&gt;</code></td>
@@ -120,7 +120,7 @@ npm run build   <span class="comment"># cada vez que cambian los SVG</span></cod
 
   <h3>Desde otra carpeta, con ruta relativa</h3>
 <pre><code><span class="comment"># ejecutado desde C:/projects/mi-app</span>
-npm --prefix C:/christian/projects/custom-components/generate-fonts run export -- incontrol-icons src/assets/fonts</code></pre>
+npm --prefix C:/christian/projects/generate.icons run export -- incontrol-icons src/assets/fonts</code></pre>
   <p>La ruta relativa se resuelve desde <code>C:/projects/mi-app</code>, que es donde se ejecutó npm.</p>
 
   <h2 id="resultado">5. Qué se copia</h2>
@@ -173,7 +173,7 @@ npm --prefix C:/christian/projects/custom-components/generate-fonts run export -
   <ul>
     <li><span class="ok">La fuente existe</span>: hay <code>fonts/&lt;fuente&gt;/icons.config.mjs</code>.</li>
     <li><span class="ok">La fuente está generada</span>: existen los 8 archivos de <code>dist/</code> y <code>icons.json</code>.</li>
-    <li><span class="ok">El destino está fuera de <code>generate-fonts/</code></span>: la copia es para un proyecto, no para el generador.</li>
+    <li><span class="ok">El destino está fuera de <code>generate.icons/</code></span>: la copia es para un proyecto, no para el generador.</li>
     <li><span class="ok">No hay copia anterior</span>, o se pasó <code>--force</code>.</li>
   </ul>
   <p>Además:</p>
@@ -187,7 +187,7 @@ npm --prefix C:/christian/projects/custom-components/generate-fonts run export -
 
   <h2 id="skill">7. Con Claude Code: <code>/exportar-fuente</code></h2>
   <p>
-    El skill está en <code>generate-fonts/.claude/skills/exportar-fuente/</code>. Puedes invocarlo con
+    El skill está en <code>generate.icons/.claude/skills/exportar-fuente/</code>. Puedes invocarlo con
     <code>/exportar-fuente</code> o pedirlo en lenguaje natural
     (“exporta los iconos a C:/projects/mi-app/src/assets/fonts”).
   </p>
@@ -199,8 +199,7 @@ npm --prefix C:/christian/projects/custom-components/generate-fonts run export -
   </ol>
   <div class="note">
     El skill no modifica <code>angular.json</code> ni otros archivos del proyecto destino salvo que lo
-    pidas expresamente. Al estar dentro de <code>generate-fonts/</code>, puede que solo aparezca en una sesión
-    nueva de Claude Code.
+    pidas expresamente. Aparece en las sesiones de Claude Code abiertas en <code>generate.icons/</code>.
   </div>
 
   <h2 id="proyecto">8. Usarlo en el proyecto</h2>
@@ -229,7 +228,7 @@ npm --prefix C:/christian/projects/custom-components/generate-fonts run export -
   <ol class="steps">
     <li>En Figma, en el nodo registrado en <code>figma</code> de <code>icons.config.mjs</code>: <em>Outline stroke</em> + <em>Flatten</em> a los iconos nuevos o cambiados.</li>
     <li>
-      Regenerar con <code>/generar-fuente</code>, o sin Claude en <code>generate-fonts/</code>:
+      Regenerar con <code>/generar-fuente</code>, o sin Claude en <code>generate.icons/</code>:
       <code>npm run pull -- incontrol-icons</code> (extrae de Figma con la API REST; necesita
       <code>FIGMA_TOKEN</code> en <code>.env</code>, ver <a href="configurar-token.html">Conectar con Figma</a>) y <code>npm run build -- incontrol-icons</code>.
       En una fuente local, copia los SVG en su <code>source/</code> y <code>npm run build</code>
@@ -268,11 +267,11 @@ npm --prefix C:/christian/projects/custom-components/generate-fonts run export -
         <tr>
           <td class="err">The font is not generated yet …</td>
           <td>Faltan archivos en <code>dist/</code> o <code>icons.json</code>.</td>
-          <td>Ejecuta <code>npm run build -- &lt;fuente&gt;</code> en <code>generate-fonts/</code>.</td>
+          <td>Ejecuta <code>npm run build -- &lt;fuente&gt;</code> en <code>generate.icons/</code>.</td>
         </tr>
         <tr>
-          <td class="err">The destination … is inside generate-fonts/</td>
-          <td>La ruta apunta dentro de <code>generate-fonts/</code>.</td>
+          <td class="err">The destination … is inside generate.icons/</td>
+          <td>La ruta apunta dentro de <code>generate.icons/</code>.</td>
           <td>Exporta a una carpeta del proyecto que usará los iconos.</td>
         </tr>
         <tr>

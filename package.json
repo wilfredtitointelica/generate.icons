@@ -1,5 +1,5 @@
 {
-  "name": "generate-fonts",
+  "name": "generate.icons",
   "version": "1.0.0",
   "private": true,
   "description": "Generador de fuentes de iconos a partir de SVG (fantasticon).",

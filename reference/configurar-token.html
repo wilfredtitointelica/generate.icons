@@ -8,7 +8,7 @@
 </head>
 <body>
 <main>
-  <p class="crumb"><a href="index.html">← Referencia de generate-fonts</a></p>
+  <p class="crumb"><a href="index.html">← Referencia de generate.icons</a></p>
   <h1>Conectar con Figma (token)</h1>
   <p class="lead">
     Cómo crear y configurar el token personal de Figma que usa <code>npm run pull</code> para extraer los
@@ -39,7 +39,7 @@
 <pre><code>Figma (nodo de iconos)
       │  npm run pull  ← FIGMA_TOKEN
       ▼
-generate-fonts/fonts/&lt;fuente&gt;/source/   →   npm run build   →   dist/ + icons.json</code></pre>
+generate.icons/fonts/&lt;fuente&gt;/source/   →   npm run build   →   dist/ + icons.json</code></pre>
   <p>
     Con el token, extraer cientos de iconos cuesta unas <strong>3 peticiones</strong> (1 para la
     estructura y 1 por cada 100 iconos). Sin token, la alternativa es el MCP de Figma desde Claude, que
@@ -49,7 +49,7 @@ generate-fonts/fonts/&lt;fuente&gt;/source/   →   npm run build   →   dist/ 
   <h2 id="antes">2. Antes de empezar</h2>
   <ul>
     <li>Una cuenta de Figma que pueda <strong>abrir</strong> los archivos de Figma de las fuentes.</li>
-    <li>Node.js 22 o superior y las dependencias instaladas en <code>generate-fonts/</code>: <code>npm ci</code>.</li>
+    <li>Node.js 22 o superior y las dependencias instaladas en <code>generate.icons/</code>: <code>npm ci</code>.</li>
     <li>
       Cada fuente con su URL de Figma registrada en <code>figma</code> de su
       <code>fonts/&lt;fuente&gt;/icons.config.mjs</code> (lo hace <code>npm run new</code> o
@@ -65,7 +65,7 @@ generate-fonts/fonts/&lt;fuente&gt;/source/   →   npm run build   →   dist/ 
     <li>Pulsa <strong>Generate new token</strong>.</li>
     <li>
       Ponle un <strong>nombre</strong> que diga para qué y dónde se usa, por ejemplo
-      <code>generate-fonts – PC de Christian</code>.
+      <code>generate.icons – PC de Christian</code>.
     </li>
     <li>Elige la <strong>caducidad</strong> (Figma la pide; anota la fecha para renovarlo a tiempo).</li>
     <li>
@@ -84,16 +84,16 @@ generate-fonts/fonts/&lt;fuente&gt;/source/   →   npm run build   →   dist/ 
 
   <h2 id="guardar">4. Guardarlo en <code>.env</code></h2>
   <p>
-    El token se guarda en <code>generate-fonts/.env</code>. Ese archivo está en el
+    El token se guarda en <code>generate.icons/.env</code>. Ese archivo está en el
     <code>.gitignore</code>: <strong>no se sube nunca</strong> al repositorio. Hay una plantilla,
     <code>.env.example</code>.
   </p>
   <h3>PowerShell</h3>
-<pre><code>cd generate-fonts
+<pre><code>cd generate.icons
 Copy-Item .env.example .env
 notepad .env</code></pre>
   <h3>Git Bash / macOS / Linux</h3>
-<pre><code>cd generate-fonts
+<pre><code>cd generate.icons
 cp .env.example .env
 code .env      <span class="comment"># o el editor que uses</span></code></pre>
   <p>Deja la línea así, con tu token y sin comillas ni espacios:</p>
@@ -106,7 +106,7 @@ code .env      <span class="comment"># o el editor que uses</span></code></pre>
   </p>
 
   <h2 id="probar">5. Probar la conexión</h2>
-  <p>Desde <code>generate-fonts/</code>, una simulación que solo lee de Figma y no escribe nada:</p>
+  <p>Desde <code>generate.icons/</code>, una simulación que solo lee de Figma y no escribe nada:</p>
 <pre><code>npm run pull -- incontrol-icons --dry-run</code></pre>
   <p>Si el token funciona, verás el resumen de lo que hay en Figma:</p>
 <pre><code>[pull-figma] incontrol-icons: 187 icons from Figma (32 categories) [dry run]
@@ -191,7 +191,7 @@ npm run pull -- otros-icons       <span class="comment"># lee el Figma de otros-
   </p>
   <ol class="steps">
     <li>Genera un token nuevo (<a href="#crear">paso 3</a>).</li>
-    <li>Reemplaza el valor de <code>FIGMA_TOKEN</code> en <code>generate-fonts/.env</code>.</li>
+    <li>Reemplaza el valor de <code>FIGMA_TOKEN</code> en <code>generate.icons/.env</code>.</li>
     <li>Revoca el anterior en Figma si aún aparece.</li>
     <li>Prueba con <code>npm run pull -- &lt;fuente&gt; --dry-run</code>.</li>
   </ol>

@@ -1,12 +1,12 @@
 ---
 name: generar-fuente
-description: Genera (o regenera) una fuente de iconos en generate-fonts/fonts/<fuente>/, desde su Figma o desde SVG copiados a mano en su carpeta source/. Pregunta si es una fuente existente (cuál) o nueva, y en ese caso su origen - Figma (pide la URL, el nombre, el prefijo y el filtro de capas, p. ej. icon-) o local (nombre y prefijo; los SVG se copian en source/, en carpetas de categoría o sueltos). Origen Figma - extrae con la API REST (npm run pull, con FIGMA_TOKEN; el MCP de Figma como alternativa sin token). Origen local - valida source/ y genera directo. En ambos, duplicados paran la generación, los iconos eliminados van a trash/ con su código reservado, y genera dist/ e icons.json (npm run build). Úsalo cuando el usuario diga "genera la fuente", "regenera <fuente>", "actualiza los iconos desde Figma", "ya copié los svg en source", "genera la fuente desde la carpeta", "crea una fuente nueva de iconos" o /generar-fuente.
+description: Genera (o regenera) una fuente de iconos en generate.icons/fonts/<fuente>/, desde su Figma o desde SVG copiados a mano en su carpeta source/. Pregunta si es una fuente existente (cuál) o nueva, y en ese caso su origen - Figma (pide la URL, el nombre, el prefijo y el filtro de capas, p. ej. icon-) o local (nombre y prefijo; los SVG se copian en source/, en carpetas de categoría o sueltos). Origen Figma - extrae con la API REST (npm run pull, con FIGMA_TOKEN; el MCP de Figma como alternativa sin token). Origen local - valida source/ y genera directo. En ambos, duplicados paran la generación, los iconos eliminados van a trash/ con su código reservado, y genera dist/ e icons.json (npm run build). Úsalo cuando el usuario diga "genera la fuente", "regenera <fuente>", "actualiza los iconos desde Figma", "ya copié los svg en source", "genera la fuente desde la carpeta", "crea una fuente nueva de iconos" o /generar-fuente.
 argument-hint: "[fuente | url-figma]"
 ---
 
 # Generar una fuente de iconos
 
-Cada fuente vive en `generate-fonts/fonts/<fuente>/` y **registra de dónde salen sus iconos** en su
+Cada fuente vive en `generate.icons/fonts/<fuente>/` y **registra de dónde salen sus iconos** en su
 `icons.config.mjs`, campo `origin`:
 
 | `origin` | De dónde salen los SVG | Cómo se llena `source/` | Generar |
@@ -14,7 +14,7 @@ Cada fuente vive en `generate-fonts/fonts/<fuente>/` y **registra de dónde sale
 | `'figma'` (por defecto) | Un nodo de Figma: `figma` (URL con `node-id`, obligatoria) y `figmaFilter` | `npm run pull -- <fuente>` (API REST, con token) | `npm run build -- <fuente>` |
 | `'local'` | SVG que alguien comparte | Se **copian a mano** en `source/` (carpetas = categorías, o sueltos) | `npm run build -- <fuente>` |
 
-Todos los comandos se ejecutan desde `generate-fonts/` (si no hay `node_modules`, antes `npm ci`).
+Todos los comandos se ejecutan desde `generate.icons/` (si no hay `node_modules`, antes `npm ci`).
 
 ## 1. ¿Fuente existente o nueva?
 
@@ -22,7 +22,7 @@ Lo que venga en los argumentos o en el mensaje no se vuelve a preguntar (una URL
 fuente de Figma; "ya copié los SVG", "desde la carpeta", implica local). Lo que falte se pregunta **en un
 solo mensaje**.
 
-Lista las fuentes: carpetas de `generate-fonts/fonts/` con `icons.config.mjs`, cada una con su
+Lista las fuentes: carpetas de `generate.icons/fonts/` con `icons.config.mjs`, cada una con su
 `origin` y, si es de Figma, su URL y su filtro. Si no hay ninguna, ve directo a **Nueva**.
 
 ### Existente
@@ -80,12 +80,12 @@ llamadas del MCP. No hagas el mapeo a mano: el script lo hace (reglas en
 
 ### Token
 
-Necesita `FIGMA_TOKEN` (variable de entorno o `generate-fonts/.env`). Si el script responde
+Necesita `FIGMA_TOKEN` (variable de entorno o `generate.icons/.env`). Si el script responde
 "Missing FIGMA_TOKEN" o 403:
 
 > Para extraer de Figma necesito un token personal de solo lectura. En Figma: **Settings → Security →
 > Personal access tokens → Generate new token**, con el scope *File content: read-only*. Cópialo en
-> `generate-fonts/.env` como `FIGMA_TOKEN=<token>` (hay un `.env.example`). No me lo pegues aquí: el
+> `generate.icons/.env` como `FIGMA_TOKEN=<token>` (hay un `.env.example`). No me lo pegues aquí: el
 > `.env` no se sube a git.
 
 El token es **de la cuenta de Figma, no de un archivo**: uno solo sirve para todas las fuentes, cada una
@@ -247,7 +247,7 @@ Para SVG que alguien comparte (sueltos o ya organizados en carpetas). No hay Fig
 
 ### Llenar source/
 
-El usuario copia los SVG en `generate-fonts/fonts/<fuente>/source/`:
+El usuario copia los SVG en `generate.icons/fonts/<fuente>/source/`:
 
 ```
 source/
