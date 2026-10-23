@@ -1,0 +1,11 @@
+{
+  "icons": [
+    {
+      "name": "icon-profitability-reports-02",
+      "file": "icon-merchant-profitability/icon-profitability-reports-02.svg",
+      "category": "Icon Merchant Profitability",
+      "codepoint": 61820,
+      "removedAt": "2026-10-23"
+    }
+  ]
+}

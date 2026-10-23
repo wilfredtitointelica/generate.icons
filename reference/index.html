@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Referencia generate-fonts</title>
+  <link rel="stylesheet" href="reference.css">
+</head>
+<body>
+<main>
+  <h1>Referencia de generate-fonts</h1>
+  <p class="lead">
+    Guías del generador de fuentes de iconos: de Figma (o de una carpeta de SVG) a <code>dist/</code>, y de
+    <code>dist/</code> al proyecto. El detalle de todos los comandos está en
+    <code>generate-fonts/README.md</code>.
+  </p>
+
+  <div class="cards">
+    <a class="card" href="generar-fuente.html">
+      <strong>1. Generar fuente</strong>
+      <span>Desde Figma o desde SVG copiados en <code>source/</code>, con <code>/generar-fuente</code> o con comandos.</span>
+    </a>
+    <a class="card" href="configurar-token.html">
+      <strong>2. Conectar con Figma (token)</strong>
+      <span>Solo para fuentes de Figma: crear el token, guardarlo en <code>.env</code> y probar la conexión.</span>
+    </a>
+    <a class="card" href="exportar-fuente.html">
+      <strong>3. Exportar fuente</strong>
+      <span>Copiar una fuente generada a la carpeta de un proyecto y usarla en Angular.</span>
+    </a>
+  </div>
+
+  <h2>Flujo completo</h2>
+<pre><code>Figma ── npm run pull (token)          SVG compartidos ── copiar a mano
+                     │                                   │
+                     └──────────────┬────────────────────┘
+                                    ▼
+                        fonts/&lt;fuente&gt;/source/
+                                    │  npm run build
+                                    ▼
+                  fonts/&lt;fuente&gt;/dist/ + icons.json
+                                    │  npm run export (copia)
+                                    ▼
+                                 proyecto</code></pre>
+  <ol class="steps">
+    <li>
+      <a href="generar-fuente.html">Generar la fuente</a>: de Figma (<a href="configurar-token.html">con
+      token</a>, <code>npm run pull</code>) o copiando los SVG en <code>source/</code>, y
+      <code>npm run build -- &lt;fuente&gt;</code>.
+    </li>
+    <li>Revisar la vista previa <code>fonts/&lt;fuente&gt;/dist/&lt;fuente&gt;.html</code>.</li>
+    <li><a href="exportar-fuente.html">Exportar</a> la fuente al proyecto.</li>
+  </ol>
+  <p>Con Claude Code: <code>/generar-fuente</code> (pasos 1 y 2) y <code>/exportar-fuente</code> (paso 3).</p>
+</main>
+</body>
+</html>

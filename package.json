@@ -12,7 +12,8 @@
     "postinstall": "patch-package",
     "export": "node scripts/export-icons.mjs",
     "new": "node scripts/new-font.mjs",
-    "sync": "node scripts/sync-figma.mjs"
+    "sync": "node scripts/sync-figma.mjs",
+    "pull": "node scripts/pull-figma.mjs"
   },
   "devDependencies": {
     "fantasticon": "4.1.0",

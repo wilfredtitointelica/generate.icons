@@ -1,0 +1,383 @@
+{
+  "categories": [
+    {
+      "folder": "navigation",
+      "name": "Navigation",
+      "icons": [
+        "icon-arrow-left",
+        "icon-arrow-right",
+        "icon-arrow-up",
+        "icon-arrow-down",
+        "icon-arrow-left-double",
+        "icon-arrow-right-double",
+        "icon-arrow-up-double",
+        "icon-arrow-down-double",
+        "icon-nav-left",
+        "icon-nav-right",
+        "icon-nav-down",
+        "icon-nav-up",
+        "icon-nav-diagonal",
+        "icon-varation"
+      ]
+    },
+    {
+      "folder": "actions",
+      "name": "Actions",
+      "icons": [
+        "icon-check",
+        "icon-cancel",
+        "icon-remove",
+        "icon-add",
+        "icon-unavailable",
+        "icon-delete",
+        "icon-loading",
+        "icon-drag",
+        "icon-collapse",
+        "icon-external-link"
+      ]
+    },
+    {
+      "folder": "business-and-finance",
+      "name": "Business and finance",
+      "icons": [
+        "icon-credit-card",
+        "icon-atm",
+        "icon-bank",
+        "icon-coins",
+        "icon-cash",
+        "icon-invoice",
+        "icon-chart",
+        "icon-pie-chart",
+        "icon-presentation",
+        "icon-target",
+        "icon-calculator",
+        "icon-qr-code",
+        "icon-star-up",
+        "icon-economic-growth",
+        "icon-economic-decrease",
+        "icon-business",
+        "icon-opportunities",
+        "icon-graphic-target",
+        "icon-reports"
+      ]
+    },
+    {
+      "folder": "devices",
+      "name": "Devices",
+      "icons": [
+        "icon-computer",
+        "icon-beta-server",
+        "icon-mirroring-screen",
+        "icon-laptop",
+        "icon-modern-tv",
+        "icon-3d-view"
+      ]
+    },
+    {
+      "folder": "alert-notification",
+      "name": "Alert notification",
+      "icons": [
+        "icon-alert",
+        "icon-warning",
+        "icon-success",
+        "icon-info",
+        "icon-help",
+        "icon-notification",
+        "icon-notification-off",
+        "icon-compass-notification",
+        "icon-compass-notification-off",
+        "icon-input-success",
+        "icon-input-success-disabled",
+        "icon-input-error",
+        "icon-overlay-success",
+        "icon-overlay-error",
+        "icon-dot-notification",
+        "icon-message-question"
+      ]
+    },
+    {
+      "folder": "security",
+      "name": "Security",
+      "icons": [
+        "icon-access",
+        "icon-locked",
+        "icon-lock",
+        "icon-unlock",
+        "icon-lock-password",
+        "icon-security",
+        "icon-security-lock",
+        "icon-security-password-lock"
+      ]
+    },
+    {
+      "folder": "edit-formating",
+      "name": "Edit formating",
+      "icons": [
+        "icon-edit",
+        "icon-text",
+        "icon-reload",
+        "icon-view",
+        "icon-view-off",
+        "icon-maximize-screen",
+        "icon-minimize-screen",
+        "icon-detail"
+      ]
+    },
+    {
+      "folder": "files-folders",
+      "name": "Files folders",
+      "icons": [
+        "icon-archive",
+        "icon-file-copy",
+        "icon-file",
+        "icon-no-data",
+        "icon-no-data-card",
+        "icon-folder",
+        "icon-cloud",
+        "icon-link",
+        "icon-attachment",
+        "icon-shared",
+        "icon-csv",
+        "icon-doc",
+        "icon-xsl",
+        "icon-pdf",
+        "icon-gif",
+        "icon-xml",
+        "icon-ppt",
+        "icon-jpg",
+        "icon-png",
+        "icon-raw",
+        "icon-zip",
+        "icon-hdr",
+        "icon-txt"
+      ]
+    },
+    {
+      "folder": "icon-services",
+      "name": "Icon services",
+      "icons": [
+        "icon-opt-out",
+        "icon-favorites-off",
+        "icon-favorites-on",
+        "icon-custom"
+      ]
+    },
+    {
+      "folder": "icon-fee-manager",
+      "name": "Icon Fee Manager",
+      "icons": [
+        "icon-incontrol-panel",
+        "icon-fee-library",
+        "icon-fee-update",
+        "icon-analytics-reports",
+        "icon-saving-opportunities",
+        "icon-brand-publications",
+        "icon-fee-validation",
+        "icon-resources"
+      ]
+    },
+    {
+      "folder": "icon-interchange-hub",
+      "name": "Icon Interchange Hub",
+      "icons": [
+        "icon-executive-overview",
+        "icon-my-reports",
+        "icon-portafolio-analysis",
+        "icon-merchant-profitability-hub"
+      ]
+    },
+    {
+      "folder": "icon-budget-planner",
+      "name": "Icon Budget Planner",
+      "icons": [
+        "icon-set-up",
+        "icon-budget-forecast",
+        "icon-budget-monitoring"
+      ]
+    },
+    {
+      "folder": "icon-merchant-profitability",
+      "name": "Icon Merchant Profitability",
+      "icons": [
+        "icon-profitability-summary",
+        "icon-profitability-reports",
+        "icon-merchant-not-reported",
+        "icon-merchant-acquisition-forecaster"
+      ]
+    },
+    {
+      "folder": "icon-business-intelligence",
+      "name": "Icon Business Intelligence",
+      "icons": [
+        "icon-acquirer-dashboard-rbc",
+        "icon-dashboards",
+        "icon-scheme-fees"
+      ]
+    },
+    {
+      "folder": "icon-portfolio-management",
+      "name": "Icon Portfolio Management",
+      "icons": [
+        "icon-rbc-reports"
+      ]
+    },
+    {
+      "folder": "user",
+      "name": "User",
+      "icons": [
+        "icon-user",
+        "icon-user-multiple",
+        "icon-user-group",
+        "icon-user-status"
+      ]
+    },
+    {
+      "folder": "bookmark-favorite",
+      "name": "Bookmark favorite",
+      "icons": [
+        "icon-boookmark-off",
+        "icon-boookmark-on",
+        "icon-favorite"
+      ]
+    },
+    {
+      "folder": "communications",
+      "name": "Communications",
+      "icons": [
+        "icon-comment",
+        "icon-sent",
+        "icon-call",
+        "icon-mobile-sms",
+        "icon-megaphone",
+        "icon-mail",
+        "icon-idea"
+      ]
+    },
+    {
+      "folder": "settings",
+      "name": "Settings",
+      "icons": [
+        "icon-settings",
+        "icon-settings-error",
+        "icon-unsubscribe",
+        "icon-sign-out",
+        "icon-search",
+        "icon-no-results",
+        "icon-zoom-max",
+        "icon-zoom-min",
+        "icon-cookies",
+        "icon-privacy-policy"
+      ]
+    },
+    {
+      "folder": "download-and-upload",
+      "name": "Download & Upload",
+      "icons": [
+        "icon-upload",
+        "icon-download"
+      ]
+    },
+    {
+      "folder": "programming",
+      "name": "Programming",
+      "icons": [
+        "icon-database",
+        "icon-pin-code",
+        "icon-website"
+      ]
+    },
+    {
+      "folder": "location",
+      "name": "Location",
+      "icons": [
+        "icon-location",
+        "icon-home"
+      ]
+    },
+    {
+      "folder": "filter-sorting",
+      "name": "Filter Sorting",
+      "icons": [
+        "icon-filter",
+        "icon-sort-table"
+      ]
+    },
+    {
+      "folder": "image",
+      "name": "Image",
+      "icons": [
+        "icon-image"
+      ]
+    },
+    {
+      "folder": "menu",
+      "name": "Menu",
+      "icons": [
+        "icon-menu",
+        "icon-more-vertical",
+        "icon-list"
+      ]
+    },
+    {
+      "folder": "e-commerce",
+      "name": "E-Commerce",
+      "icons": [
+        "icon-discount"
+      ]
+    },
+    {
+      "folder": "dashboard",
+      "name": "Dashboard",
+      "icons": [
+        "icon-dashboard-01",
+        "icon-dashboard-02"
+      ]
+    },
+    {
+      "folder": "note-task",
+      "name": "Note task",
+      "icons": [
+        "icon-note",
+        "icon-task",
+        "icon-task-daily"
+      ]
+    },
+    {
+      "folder": "icon-products",
+      "name": "Icon products",
+      "icons": [
+        "icon-fee-manager",
+        "icon-interchange-hub",
+        "icon-budget-tool",
+        "icon-merchant-profitability",
+        "icon-business-intelligence",
+        "icon-portfolio-management",
+        "icon-list-of-opportunities"
+      ]
+    },
+    {
+      "folder": "date-and-time",
+      "name": "Date & Time",
+      "icons": [
+        "icon-calendar",
+        "icon-clock"
+      ]
+    },
+    {
+      "folder": "technology",
+      "name": "Technology",
+      "icons": [
+        "icon-no-connection"
+      ]
+    },
+    {
+      "folder": "icon-backup",
+      "name": "Icon Backup",
+      "icons": [
+        "icon-scheme-reconciliation-report",
+        "icon-card-business-profitability-tool"
+      ]
+    }
+  ],
+  "icons": []
+}

@@ -1,0 +1,1127 @@
+{
+  "name": "incontrol-icons",
+  "categories": [
+    {
+      "category": "Navigation",
+      "slug": "navigation",
+      "icons": [
+        {
+          "name": "icon-arrow-left",
+          "code": 61844,
+          "unicode": "f194"
+        },
+        {
+          "name": "icon-arrow-right",
+          "code": 61846,
+          "unicode": "f196"
+        },
+        {
+          "name": "icon-arrow-up",
+          "code": 61848,
+          "unicode": "f198"
+        },
+        {
+          "name": "icon-arrow-down",
+          "code": 61842,
+          "unicode": "f192"
+        },
+        {
+          "name": "icon-arrow-left-double",
+          "code": 61843,
+          "unicode": "f193"
+        },
+        {
+          "name": "icon-arrow-right-double",
+          "code": 61845,
+          "unicode": "f195"
+        },
+        {
+          "name": "icon-arrow-up-double",
+          "code": 61847,
+          "unicode": "f197"
+        },
+        {
+          "name": "icon-arrow-down-double",
+          "code": 61841,
+          "unicode": "f191"
+        },
+        {
+          "name": "icon-nav-left",
+          "code": 61851,
+          "unicode": "f19b"
+        },
+        {
+          "name": "icon-nav-right",
+          "code": 61852,
+          "unicode": "f19c"
+        },
+        {
+          "name": "icon-nav-down",
+          "code": 61850,
+          "unicode": "f19a"
+        },
+        {
+          "name": "icon-nav-up",
+          "code": 61853,
+          "unicode": "f19d"
+        },
+        {
+          "name": "icon-nav-diagonal",
+          "code": 61849,
+          "unicode": "f199"
+        },
+        {
+          "name": "icon-varation",
+          "code": 61854,
+          "unicode": "f19e"
+        }
+      ]
+    },
+    {
+      "category": "Actions",
+      "slug": "actions",
+      "icons": [
+        {
+          "name": "icon-check",
+          "code": 61699,
+          "unicode": "f103"
+        },
+        {
+          "name": "icon-cancel",
+          "code": 61698,
+          "unicode": "f102"
+        },
+        {
+          "name": "icon-remove",
+          "code": 61705,
+          "unicode": "f109"
+        },
+        {
+          "name": "icon-add",
+          "code": 61697,
+          "unicode": "f101"
+        },
+        {
+          "name": "icon-unavailable",
+          "code": 61706,
+          "unicode": "f10a"
+        },
+        {
+          "name": "icon-delete",
+          "code": 61701,
+          "unicode": "f105"
+        },
+        {
+          "name": "icon-loading",
+          "code": 61704,
+          "unicode": "f108"
+        },
+        {
+          "name": "icon-drag",
+          "code": 61702,
+          "unicode": "f106"
+        },
+        {
+          "name": "icon-collapse",
+          "code": 61700,
+          "unicode": "f104"
+        },
+        {
+          "name": "icon-external-link",
+          "code": 61703,
+          "unicode": "f107"
+        }
+      ]
+    },
+    {
+      "category": "Business and finance",
+      "slug": "business-and-finance",
+      "icons": [
+        {
+          "name": "icon-credit-card",
+          "code": 61733,
+          "unicode": "f125"
+        },
+        {
+          "name": "icon-atm",
+          "code": 61726,
+          "unicode": "f11e"
+        },
+        {
+          "name": "icon-bank",
+          "code": 61727,
+          "unicode": "f11f"
+        },
+        {
+          "name": "icon-coins",
+          "code": 61732,
+          "unicode": "f124"
+        },
+        {
+          "name": "icon-cash",
+          "code": 61730,
+          "unicode": "f122"
+        },
+        {
+          "name": "icon-invoice",
+          "code": 61737,
+          "unicode": "f129"
+        },
+        {
+          "name": "icon-chart",
+          "code": 61731,
+          "unicode": "f123"
+        },
+        {
+          "name": "icon-pie-chart",
+          "code": 61739,
+          "unicode": "f12b"
+        },
+        {
+          "name": "icon-presentation",
+          "code": 61740,
+          "unicode": "f12c"
+        },
+        {
+          "name": "icon-target",
+          "code": 61744,
+          "unicode": "f130"
+        },
+        {
+          "name": "icon-calculator",
+          "code": 61729,
+          "unicode": "f121"
+        },
+        {
+          "name": "icon-qr-code",
+          "code": 61741,
+          "unicode": "f12d"
+        },
+        {
+          "name": "icon-star-up",
+          "code": 61743,
+          "unicode": "f12f"
+        },
+        {
+          "name": "icon-economic-growth",
+          "code": 61735,
+          "unicode": "f127"
+        },
+        {
+          "name": "icon-economic-decrease",
+          "code": 61734,
+          "unicode": "f126"
+        },
+        {
+          "name": "icon-business",
+          "code": 61728,
+          "unicode": "f120"
+        },
+        {
+          "name": "icon-opportunities",
+          "code": 61738,
+          "unicode": "f12a"
+        },
+        {
+          "name": "icon-graphic-target",
+          "code": 61736,
+          "unicode": "f128"
+        },
+        {
+          "name": "icon-reports",
+          "code": 61742,
+          "unicode": "f12e"
+        }
+      ]
+    },
+    {
+      "category": "Devices",
+      "slug": "devices",
+      "icons": [
+        {
+          "name": "icon-computer",
+          "code": 61758,
+          "unicode": "f13e"
+        },
+        {
+          "name": "icon-beta-server",
+          "code": 61757,
+          "unicode": "f13d"
+        },
+        {
+          "name": "icon-mirroring-screen",
+          "code": 61760,
+          "unicode": "f140"
+        },
+        {
+          "name": "icon-laptop",
+          "code": 61759,
+          "unicode": "f13f"
+        },
+        {
+          "name": "icon-modern-tv",
+          "code": 61761,
+          "unicode": "f141"
+        },
+        {
+          "name": "icon-3d-view",
+          "code": 61756,
+          "unicode": "f13c"
+        }
+      ]
+    },
+    {
+      "category": "Alert notification",
+      "slug": "alert-notification",
+      "icons": [
+        {
+          "name": "icon-alert",
+          "code": 61707,
+          "unicode": "f10b"
+        },
+        {
+          "name": "icon-warning",
+          "code": 61722,
+          "unicode": "f11a"
+        },
+        {
+          "name": "icon-success",
+          "code": 61721,
+          "unicode": "f119"
+        },
+        {
+          "name": "icon-info",
+          "code": 61712,
+          "unicode": "f110"
+        },
+        {
+          "name": "icon-help",
+          "code": 61711,
+          "unicode": "f10f"
+        },
+        {
+          "name": "icon-notification",
+          "code": 61718,
+          "unicode": "f116"
+        },
+        {
+          "name": "icon-notification-off",
+          "code": 61717,
+          "unicode": "f115"
+        },
+        {
+          "name": "icon-compass-notification",
+          "code": 61709,
+          "unicode": "f10d"
+        },
+        {
+          "name": "icon-compass-notification-off",
+          "code": 61708,
+          "unicode": "f10c"
+        },
+        {
+          "name": "icon-input-success",
+          "code": 61715,
+          "unicode": "f113"
+        },
+        {
+          "name": "icon-input-success-disabled",
+          "code": 61714,
+          "unicode": "f112"
+        },
+        {
+          "name": "icon-input-error",
+          "code": 61713,
+          "unicode": "f111"
+        },
+        {
+          "name": "icon-overlay-success",
+          "code": 61720,
+          "unicode": "f118"
+        },
+        {
+          "name": "icon-overlay-error",
+          "code": 61719,
+          "unicode": "f117"
+        },
+        {
+          "name": "icon-dot-notification",
+          "code": 61710,
+          "unicode": "f10e"
+        },
+        {
+          "name": "icon-message-question",
+          "code": 61716,
+          "unicode": "f114"
+        }
+      ]
+    },
+    {
+      "category": "Security",
+      "slug": "security",
+      "icons": [
+        {
+          "name": "icon-access",
+          "code": 61861,
+          "unicode": "f1a5"
+        },
+        {
+          "name": "icon-locked",
+          "code": 61864,
+          "unicode": "f1a8"
+        },
+        {
+          "name": "icon-lock",
+          "code": 61863,
+          "unicode": "f1a7"
+        },
+        {
+          "name": "icon-unlock",
+          "code": 61868,
+          "unicode": "f1ac"
+        },
+        {
+          "name": "icon-lock-password",
+          "code": 61862,
+          "unicode": "f1a6"
+        },
+        {
+          "name": "icon-security",
+          "code": 61867,
+          "unicode": "f1ab"
+        },
+        {
+          "name": "icon-security-lock",
+          "code": 61865,
+          "unicode": "f1a9"
+        },
+        {
+          "name": "icon-security-password-lock",
+          "code": 61866,
+          "unicode": "f1aa"
+        }
+      ]
+    },
+    {
+      "category": "Edit formating",
+      "slug": "edit-formating",
+      "icons": [
+        {
+          "name": "icon-edit",
+          "code": 61766,
+          "unicode": "f146"
+        },
+        {
+          "name": "icon-text",
+          "code": 61770,
+          "unicode": "f14a"
+        },
+        {
+          "name": "icon-reload",
+          "code": 61769,
+          "unicode": "f149"
+        },
+        {
+          "name": "icon-view",
+          "code": 61772,
+          "unicode": "f14c"
+        },
+        {
+          "name": "icon-view-off",
+          "code": 61771,
+          "unicode": "f14b"
+        },
+        {
+          "name": "icon-maximize-screen",
+          "code": 61767,
+          "unicode": "f147"
+        },
+        {
+          "name": "icon-minimize-screen",
+          "code": 61768,
+          "unicode": "f148"
+        },
+        {
+          "name": "icon-detail",
+          "code": 61765,
+          "unicode": "f145"
+        }
+      ]
+    },
+    {
+      "category": "Files folders",
+      "slug": "files-folders",
+      "icons": [
+        {
+          "name": "icon-archive",
+          "code": 61773,
+          "unicode": "f14d"
+        },
+        {
+          "name": "icon-file-copy",
+          "code": 61778,
+          "unicode": "f152"
+        },
+        {
+          "name": "icon-file",
+          "code": 61779,
+          "unicode": "f153"
+        },
+        {
+          "name": "icon-no-data",
+          "code": 61786,
+          "unicode": "f15a"
+        },
+        {
+          "name": "icon-no-data-card",
+          "code": 61785,
+          "unicode": "f159"
+        },
+        {
+          "name": "icon-folder",
+          "code": 61780,
+          "unicode": "f154"
+        },
+        {
+          "name": "icon-cloud",
+          "code": 61775,
+          "unicode": "f14f"
+        },
+        {
+          "name": "icon-link",
+          "code": 61784,
+          "unicode": "f158"
+        },
+        {
+          "name": "icon-attachment",
+          "code": 61774,
+          "unicode": "f14e"
+        },
+        {
+          "name": "icon-shared",
+          "code": 61791,
+          "unicode": "f15f"
+        },
+        {
+          "name": "icon-csv",
+          "code": 61776,
+          "unicode": "f150"
+        },
+        {
+          "name": "icon-doc",
+          "code": 61777,
+          "unicode": "f151"
+        },
+        {
+          "name": "icon-xsl",
+          "code": 61794,
+          "unicode": "f162"
+        },
+        {
+          "name": "icon-pdf",
+          "code": 61787,
+          "unicode": "f15b"
+        },
+        {
+          "name": "icon-gif",
+          "code": 61781,
+          "unicode": "f155"
+        },
+        {
+          "name": "icon-xml",
+          "code": 61793,
+          "unicode": "f161"
+        },
+        {
+          "name": "icon-ppt",
+          "code": 61789,
+          "unicode": "f15d"
+        },
+        {
+          "name": "icon-jpg",
+          "code": 61783,
+          "unicode": "f157"
+        },
+        {
+          "name": "icon-png",
+          "code": 61788,
+          "unicode": "f15c"
+        },
+        {
+          "name": "icon-raw",
+          "code": 61790,
+          "unicode": "f15e"
+        },
+        {
+          "name": "icon-zip",
+          "code": 61795,
+          "unicode": "f163"
+        },
+        {
+          "name": "icon-hdr",
+          "code": 61782,
+          "unicode": "f156"
+        },
+        {
+          "name": "icon-txt",
+          "code": 61792,
+          "unicode": "f160"
+        }
+      ]
+    },
+    {
+      "category": "Icon services",
+      "slug": "icon-services",
+      "icons": [
+        {
+          "name": "icon-opt-out",
+          "code": 61834,
+          "unicode": "f18a"
+        },
+        {
+          "name": "icon-favorites-off",
+          "code": 61832,
+          "unicode": "f188"
+        },
+        {
+          "name": "icon-favorites-on",
+          "code": 61833,
+          "unicode": "f189"
+        },
+        {
+          "name": "icon-custom",
+          "code": 61831,
+          "unicode": "f187"
+        }
+      ]
+    },
+    {
+      "category": "Icon Fee Manager",
+      "slug": "icon-fee-manager",
+      "icons": [
+        {
+          "name": "icon-incontrol-panel",
+          "code": 61811,
+          "unicode": "f173"
+        },
+        {
+          "name": "icon-fee-library",
+          "code": 61808,
+          "unicode": "f170"
+        },
+        {
+          "name": "icon-fee-update",
+          "code": 61809,
+          "unicode": "f171"
+        },
+        {
+          "name": "icon-analytics-reports",
+          "code": 61806,
+          "unicode": "f16e"
+        },
+        {
+          "name": "icon-saving-opportunities",
+          "code": 61813,
+          "unicode": "f175"
+        },
+        {
+          "name": "icon-brand-publications",
+          "code": 61807,
+          "unicode": "f16f"
+        },
+        {
+          "name": "icon-fee-validation",
+          "code": 61810,
+          "unicode": "f172"
+        },
+        {
+          "name": "icon-resources",
+          "code": 61812,
+          "unicode": "f174"
+        }
+      ]
+    },
+    {
+      "category": "Icon Interchange Hub",
+      "slug": "icon-interchange-hub",
+      "icons": [
+        {
+          "name": "icon-executive-overview",
+          "code": 61814,
+          "unicode": "f176"
+        },
+        {
+          "name": "icon-my-reports",
+          "code": 61816,
+          "unicode": "f178"
+        },
+        {
+          "name": "icon-portafolio-analysis",
+          "code": 61817,
+          "unicode": "f179"
+        },
+        {
+          "name": "icon-merchant-profitability-hub",
+          "code": 61815,
+          "unicode": "f177"
+        }
+      ]
+    },
+    {
+      "category": "Icon Budget Planner",
+      "slug": "icon-budget-planner",
+      "icons": [
+        {
+          "name": "icon-set-up",
+          "code": 61802,
+          "unicode": "f16a"
+        },
+        {
+          "name": "icon-budget-forecast",
+          "code": 61800,
+          "unicode": "f168"
+        },
+        {
+          "name": "icon-budget-monitoring",
+          "code": 61801,
+          "unicode": "f169"
+        }
+      ]
+    },
+    {
+      "category": "Icon Merchant Profitability",
+      "slug": "icon-merchant-profitability",
+      "icons": [
+        {
+          "name": "icon-profitability-summary",
+          "code": 61822,
+          "unicode": "f17e"
+        },
+        {
+          "name": "icon-profitability-reports",
+          "code": 61821,
+          "unicode": "f17d"
+        },
+        {
+          "name": "icon-merchant-not-reported",
+          "code": 61819,
+          "unicode": "f17b"
+        },
+        {
+          "name": "icon-merchant-acquisition-forecaster",
+          "code": 61818,
+          "unicode": "f17a"
+        }
+      ]
+    },
+    {
+      "category": "Icon Business Intelligence",
+      "slug": "icon-business-intelligence",
+      "icons": [
+        {
+          "name": "icon-acquirer-dashboard-rbc",
+          "code": 61803,
+          "unicode": "f16b"
+        },
+        {
+          "name": "icon-dashboards",
+          "code": 61804,
+          "unicode": "f16c"
+        },
+        {
+          "name": "icon-scheme-fees",
+          "code": 61805,
+          "unicode": "f16d"
+        }
+      ]
+    },
+    {
+      "category": "Icon Portfolio Management",
+      "slug": "icon-portfolio-management",
+      "icons": [
+        {
+          "name": "icon-rbc-reports",
+          "code": 61823,
+          "unicode": "f17f"
+        }
+      ]
+    },
+    {
+      "category": "User",
+      "slug": "user",
+      "icons": [
+        {
+          "name": "icon-user",
+          "code": 61883,
+          "unicode": "f1bb"
+        },
+        {
+          "name": "icon-user-multiple",
+          "code": 61881,
+          "unicode": "f1b9"
+        },
+        {
+          "name": "icon-user-group",
+          "code": 61880,
+          "unicode": "f1b8"
+        },
+        {
+          "name": "icon-user-status",
+          "code": 61882,
+          "unicode": "f1ba"
+        }
+      ]
+    },
+    {
+      "category": "Bookmark favorite",
+      "slug": "bookmark-favorite",
+      "icons": [
+        {
+          "name": "icon-boookmark-off",
+          "code": 61723,
+          "unicode": "f11b"
+        },
+        {
+          "name": "icon-boookmark-on",
+          "code": 61724,
+          "unicode": "f11c"
+        },
+        {
+          "name": "icon-favorite",
+          "code": 61725,
+          "unicode": "f11d"
+        }
+      ]
+    },
+    {
+      "category": "Communications",
+      "slug": "communications",
+      "icons": [
+        {
+          "name": "icon-comment",
+          "code": 61746,
+          "unicode": "f132"
+        },
+        {
+          "name": "icon-sent",
+          "code": 61751,
+          "unicode": "f137"
+        },
+        {
+          "name": "icon-call",
+          "code": 61745,
+          "unicode": "f131"
+        },
+        {
+          "name": "icon-mobile-sms",
+          "code": 61750,
+          "unicode": "f136"
+        },
+        {
+          "name": "icon-megaphone",
+          "code": 61749,
+          "unicode": "f135"
+        },
+        {
+          "name": "icon-mail",
+          "code": 61748,
+          "unicode": "f134"
+        },
+        {
+          "name": "icon-idea",
+          "code": 61747,
+          "unicode": "f133"
+        }
+      ]
+    },
+    {
+      "category": "Settings",
+      "slug": "settings",
+      "icons": [
+        {
+          "name": "icon-settings",
+          "code": 61874,
+          "unicode": "f1b2"
+        },
+        {
+          "name": "icon-settings-error",
+          "code": 61873,
+          "unicode": "f1b1"
+        },
+        {
+          "name": "icon-unsubscribe",
+          "code": 61876,
+          "unicode": "f1b4"
+        },
+        {
+          "name": "icon-sign-out",
+          "code": 61875,
+          "unicode": "f1b3"
+        },
+        {
+          "name": "icon-search",
+          "code": 61872,
+          "unicode": "f1b0"
+        },
+        {
+          "name": "icon-no-results",
+          "code": 61870,
+          "unicode": "f1ae"
+        },
+        {
+          "name": "icon-zoom-max",
+          "code": 61877,
+          "unicode": "f1b5"
+        },
+        {
+          "name": "icon-zoom-min",
+          "code": 61878,
+          "unicode": "f1b6"
+        },
+        {
+          "name": "icon-cookies",
+          "code": 61869,
+          "unicode": "f1ad"
+        },
+        {
+          "name": "icon-privacy-policy",
+          "code": 61871,
+          "unicode": "f1af"
+        }
+      ]
+    },
+    {
+      "category": "Download & Upload",
+      "slug": "download-and-upload",
+      "icons": [
+        {
+          "name": "icon-upload",
+          "code": 61763,
+          "unicode": "f143"
+        },
+        {
+          "name": "icon-download",
+          "code": 61762,
+          "unicode": "f142"
+        }
+      ]
+    },
+    {
+      "category": "Programming",
+      "slug": "programming",
+      "icons": [
+        {
+          "name": "icon-database",
+          "code": 61858,
+          "unicode": "f1a2"
+        },
+        {
+          "name": "icon-pin-code",
+          "code": 61859,
+          "unicode": "f1a3"
+        },
+        {
+          "name": "icon-website",
+          "code": 61860,
+          "unicode": "f1a4"
+        }
+      ]
+    },
+    {
+      "category": "Location",
+      "slug": "location",
+      "icons": [
+        {
+          "name": "icon-location",
+          "code": 61837,
+          "unicode": "f18d"
+        },
+        {
+          "name": "icon-home",
+          "code": 61836,
+          "unicode": "f18c"
+        }
+      ]
+    },
+    {
+      "category": "Filter Sorting",
+      "slug": "filter-sorting",
+      "icons": [
+        {
+          "name": "icon-filter",
+          "code": 61796,
+          "unicode": "f164"
+        },
+        {
+          "name": "icon-sort-table",
+          "code": 61797,
+          "unicode": "f165"
+        }
+      ]
+    },
+    {
+      "category": "Image",
+      "slug": "image",
+      "icons": [
+        {
+          "name": "icon-image",
+          "code": 61835,
+          "unicode": "f18b"
+        }
+      ]
+    },
+    {
+      "category": "Menu",
+      "slug": "menu",
+      "icons": [
+        {
+          "name": "icon-menu",
+          "code": 61839,
+          "unicode": "f18f"
+        },
+        {
+          "name": "icon-more-vertical",
+          "code": 61840,
+          "unicode": "f190"
+        },
+        {
+          "name": "icon-list",
+          "code": 61838,
+          "unicode": "f18e"
+        }
+      ]
+    },
+    {
+      "category": "E-Commerce",
+      "slug": "e-commerce",
+      "icons": [
+        {
+          "name": "icon-discount",
+          "code": 61764,
+          "unicode": "f144"
+        }
+      ]
+    },
+    {
+      "category": "Dashboard",
+      "slug": "dashboard",
+      "icons": [
+        {
+          "name": "icon-dashboard-01",
+          "code": 61752,
+          "unicode": "f138"
+        },
+        {
+          "name": "icon-dashboard-02",
+          "code": 61753,
+          "unicode": "f139"
+        }
+      ]
+    },
+    {
+      "category": "Note task",
+      "slug": "note-task",
+      "icons": [
+        {
+          "name": "icon-note",
+          "code": 61855,
+          "unicode": "f19f"
+        },
+        {
+          "name": "icon-task",
+          "code": 61857,
+          "unicode": "f1a1"
+        },
+        {
+          "name": "icon-task-daily",
+          "code": 61856,
+          "unicode": "f1a0"
+        }
+      ]
+    },
+    {
+      "category": "Icon products",
+      "slug": "icon-products",
+      "icons": [
+        {
+          "name": "icon-fee-manager",
+          "code": 61826,
+          "unicode": "f182"
+        },
+        {
+          "name": "icon-interchange-hub",
+          "code": 61827,
+          "unicode": "f183"
+        },
+        {
+          "name": "icon-budget-tool",
+          "code": 61824,
+          "unicode": "f180"
+        },
+        {
+          "name": "icon-merchant-profitability",
+          "code": 61829,
+          "unicode": "f185"
+        },
+        {
+          "name": "icon-business-intelligence",
+          "code": 61825,
+          "unicode": "f181"
+        },
+        {
+          "name": "icon-portfolio-management",
+          "code": 61830,
+          "unicode": "f186"
+        },
+        {
+          "name": "icon-list-of-opportunities",
+          "code": 61828,
+          "unicode": "f184"
+        }
+      ]
+    },
+    {
+      "category": "Date & Time",
+      "slug": "date-and-time",
+      "icons": [
+        {
+          "name": "icon-calendar",
+          "code": 61754,
+          "unicode": "f13a"
+        },
+        {
+          "name": "icon-clock",
+          "code": 61755,
+          "unicode": "f13b"
+        }
+      ]
+    },
+    {
+      "category": "Technology",
+      "slug": "technology",
+      "icons": [
+        {
+          "name": "icon-no-connection",
+          "code": 61879,
+          "unicode": "f1b7"
+        }
+      ]
+    },
+    {
+      "category": "Icon Backup",
+      "slug": "icon-backup",
+      "icons": [
+        {
+          "name": "icon-scheme-reconciliation-report",
+          "code": 61799,
+          "unicode": "f167"
+        },
+        {
+          "name": "icon-card-business-profitability-tool",
+          "code": 61798,
+          "unicode": "f166"
+        }
+      ]
+    }
+  ]
+}

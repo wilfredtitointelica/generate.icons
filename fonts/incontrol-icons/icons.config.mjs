@@ -6,11 +6,13 @@ export default {
   name: 'incontrol-icons',
   /** Every icon file and CSS class starts with it: icon-search.svg -> .icon-search */
   prefix: 'icon',
+  /** Where the icons come from: 'figma' = the node below, extracted with npm run pull. */
+  origin: 'figma',
   /**
    * Figma node the icons are extracted from (npm run sync, skill generar-fuente). Required: the build
    * fails while it is empty. Format: https://www.figma.com/design/<file>/<name>?node-id=<node>
    */
-  figma: '',
+  figma: 'https://www.figma.com/design/gOmSggyN0ueuYE4aOnrOej/Pruebas?node-id=1-428&t=2yqSz8fdk5jwYdnS-4',
   /**
    * Only the Figma layers whose name starts with it are icons (case-insensitive), e.g. 'icon-'.
    * Empty: every icon of the node. Used by the skill generar-fuente.
@@ -21,10 +23,10 @@ export default {
   fontHeight: 1000,
   normalize: true,
   /**
-   * Display name of each category folder. A folder missing here is shown capitalized
-   * (navigation -> Navigation); its order is alphabetical by folder.
+   * Optional: display names that override the Figma ones, by category folder
+   * ({ 'business-and-finance': 'Business & finance' }). Leave it empty to show the names as in Figma
+   * (saved in source/figma.json); without Figma, a folder is shown capitalized. The order is always
+   * the Figma one.
    */
-  categories: {
-    'business-and-finance': 'Business & finance',
-  },
+  categories: {},
 };

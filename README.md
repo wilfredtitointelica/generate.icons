@@ -1,12 +1,17 @@
 # generate-fonts
 
-Generador de fuentes de iconos a partir de SVG exportados de Figma. La carpeta es autocontenida
+Generador de fuentes de iconos a partir de SVG, extraídos de Figma o copiados a mano. La carpeta es autocontenida
 (su propio `package.json`, dependencias, scripts y configuración): se puede copiar a otro repositorio
 tal cual. Admite varias fuentes (`incontrol-icons`, `incontrol-system`, …), cada una en `fonts/<fuente>/`.
 
 **`generate-fonts/` solo genera.** Ningún proyecto la referencia: la fuente generada se **exporta**
 (copia) a una carpeta del proyecto, y el proyecto usa esa copia (ver
 [Exportar a un proyecto](#exportar-a-un-proyecto)).
+
+Guías en HTML (ábrelas en el navegador): [reference/index.html](reference/index.html), con
+[generar una fuente](reference/generar-fuente.html),
+[conectar con Figma (token)](reference/configurar-token.html) y
+[exportar fuente](reference/exportar-fuente.html).
 
 Herramienta: [fantasticon](https://github.com/tancredi/fantasticon) 4.1.0, con un parche en
 `patches/` (ver [Parche de fantasticon](#parche-de-fantasticon)).
@@ -18,8 +23,10 @@ Desde `generate-fonts/` (requiere Node ≥ 22):
 | Comando | Qué hace |
 |---|---|
 | `npm ci` | Instala las dependencias fijadas y aplica el parche (`postinstall`). Solo la primera vez o tras actualizar dependencias. |
-| `npm run new -- <fuente> --figma "<url>" [--prefix <prefijo>] [--filter <texto>]` | Crea `fonts/<fuente>/` con su `icons.config.mjs` y la URL de Figma registrada (ver [Nueva fuente](#nueva-fuente)). |
-| `npm run sync -- <fuente> <manifiesto.json> [--dry-run]` | Reemplaza `fonts/<fuente>/source/` con los iconos extraídos de Figma (lo usa el skill `/generar-fuente`). |
+| `npm run new -- <fuente> --figma "<url>" [--prefix <prefijo>] [--filter <texto>]` | Crea una fuente de Figma: `fonts/<fuente>/` con su `icons.config.mjs` y la URL registrada (ver [Nueva fuente](#nueva-fuente)). |
+| `npm run new -- <fuente> --local [--prefix <prefijo>]` | Crea una fuente local: sus SVG se copian a mano en `source/` (ver [Origen local](#origen-local-svg-copiados-a-mano)). |
+| `npm run pull -- <fuente> [--dry-run]` | Extrae los iconos del nodo de Figma de la fuente con la API REST (necesita `FIGMA_TOKEN`) y reemplaza `fonts/<fuente>/source/` (ver [Generar desde Figma](#generar-desde-figma-recomendado)). |
+| `npm run sync -- <fuente> <manifiesto.json> [--dry-run]` | Igual, a partir de un manifiesto (alternativa sin token, con el MCP de Figma). |
 | `npm run build` | Genera **todas** las fuentes de `fonts/` (cada carpeta con `icons.config.mjs`). |
 | `npm run build -- <fuente> [<fuente>…]` | Genera solo esas fuentes, por ejemplo `npm run build -- incontrol-icons`. |
 | `npm run export -- <fuente> <ruta> [--folder <carpeta>] [--force]` | Copia una fuente generada a `<ruta>/<carpeta>/` (ver [Exportar a un proyecto](#exportar-a-un-proyecto)). |
@@ -29,28 +36,31 @@ Desde `generate-fonts/` (requiere Node ≥ 22):
 ```
 generate-fonts/
 ├── package.json · package-lock.json
+├── .env.example                   # copiar a .env con FIGMA_TOKEN (.env no se sube)
 ├── patches/fantasticon+4.1.0.patch
 ├── scripts/
 │   ├── new-font.mjs               # crea una fuente con su URL de Figma
-│   ├── sync-figma.mjs             # escribe source/ con los iconos extraídos de Figma
+│   ├── pull-figma.mjs             # Figma (API REST) → source/
+│   ├── sync-figma.mjs             # manifiesto (MCP) → source/
 │   ├── build-icons.mjs            # generador (todas las fuentes o las indicadas)
 │   ├── export-icons.mjs           # copia una fuente generada a un proyecto
-│   └── lib/fonts.mjs              # lectura y validación de icons.config.mjs (común)
+│   └── lib/                       # fonts.mjs (config) y sync.mjs (escribir source/), comunes
 ├── templates/                     # plantillas compartidas por todas las fuentes
 │   ├── css.hbs                    # @font-face + .<prefijo>-nombre::before
 │   └── html.hbs                   # vista previa agrupada por categoría
 ├── .claude/skills/
 │   ├── generar-fuente/            # skill: Figma → source/ → dist/
-│   └── exportar-iconos/           # skill: dist/ → proyecto
-├── exportar-iconos.html           # guía de la exportación
+│   └── exportar-fuente/           # skill: dist/ → proyecto
+├── reference/                     # guías HTML: index, generar-fuente, configurar-token, exportar-fuente
 └── fonts/
     ├── incontrol-icons/
     │   ├── icons.config.mjs       # nombre, prefijo, URL de Figma, primer código y nombres de categoría
     │   ├── source/                # SVG en carpetas de categoría, directos, o ambos
-    │   │   └── categories.json    # (de sync) carpeta → nombre de la categoría en Figma
+    │   │   └── figma.json         # (de sync) nombres de categoría y orden de Figma
     │   ├── templates/             # (opcional) sustituye css.hbs o html.hbs solo para esta fuente
     │   ├── dist/                  # GENERADO
-    │   └── icons.json             # GENERADO
+    │   ├── icons.json             # GENERADO
+    │   └── trash/                 # iconos eliminados de Figma (SVG + trash.json), fuera de la fuente
     └── incontrol-system/ …        # otra fuente, misma estructura
 ```
 
@@ -88,13 +98,24 @@ opcionales. En la vista previa HTML, los iconos sin categoría salen en la secci
 
 **No edites a mano `dist/` ni `icons.json`**: se reescriben en cada build.
 
-## Origen en Figma
+## Origen de los iconos
 
-Cada fuente registra **de dónde salen sus iconos** en el campo `figma` de su `icons.config.mjs`: la
-URL de la página, sección o frame de Figma que los contiene, con `node-id`
-(`https://www.figma.com/design/<file>/<nombre>?node-id=12-34`). Es **obligatorio**: el build falla
-mientras esté vacío. Para obtenerla, en Figma selecciona el frame de iconos y usa *Copy link to
-selection*.
+Cada fuente registra **de dónde salen sus iconos** en el campo `origin` de su `icons.config.mjs`.
+Guía: [reference/generar-fuente.html](reference/generar-fuente.html).
+
+| `origin` | De dónde salen | Cómo se llena `source/` | Ver |
+|---|---|---|---|
+| `'figma'` (por defecto) | Un nodo de Figma (`figma` + `figmaFilter`) | `npm run pull -- <fuente>` | [Generar desde Figma](#generar-desde-figma-recomendado) |
+| `'local'` | SVG que alguien comparte | Se copian a mano en `source/` | [Origen local](#origen-local-svg-copiados-a-mano) |
+
+En las dos, `npm run build -- <fuente>` genera `dist/` e `icons.json`.
+
+### Origen Figma
+
+El campo `figma` es la URL de la página, sección o frame de Figma que contiene los iconos, con
+`node-id` (`https://www.figma.com/design/<file>/<nombre>?node-id=12-34`). Es **obligatorio** en las
+fuentes de Figma: el build falla mientras esté vacío. Para obtenerla, en Figma selecciona el frame de
+iconos y usa *Copy link to selection*.
 
 El campo `figmaFilter` indica **qué capas de ese nodo son iconos a generar**: solo las que su nombre
 empieza por ese texto, sin distinguir mayúsculas (`'icon-'` → `icon-search` sí, `logo` o `label` no).
@@ -106,68 +127,130 @@ tiene `stroke` (en la vista previa saldría vacío).
 
 ## Generar desde Figma (recomendado)
 
-Con Claude Code: **`/generar-fuente`**. Pregunta si es una fuente existente (cuál) o nueva (pide la URL
-de Figma, el nombre y el prefijo), y el filtro de nombre de los iconos (p. ej. `icon-`). Luego:
+### Token de Figma (una vez)
 
-1. Lee el nodo de Figma con el MCP de Figma: solo las capas que pasan el filtro son iconos; los grupos
-   hijos del nodo son **categorías** y los iconos sueltos quedan **sin categoría**. Te muestra el
-   resumen (incluido lo que el filtro dejó fuera) antes de descargar.
-2. Descarga cada icono como SVG y escribe un manifiesto con nombre, categoría y URL de cada uno.
-3. `npm run sync -- <fuente> <manifiesto> --dry-run` para ver añadidos, movidos y eliminados, y luego sin
-   `--dry-run`: reemplaza `source/` (Figma manda: lo que ya no está en Figma se borra). Los nombres se
-   normalizan (`Arrow Left` → `icon-arrow-left`) y los nombres de categoría de Figma se guardan en
-   `source/categories.json`.
-4. `npm run build -- <fuente>`.
+Guía paso a paso: [reference/configurar-token.html](reference/configurar-token.html).
 
-Formato del manifiesto (`name` y `category` tal cual en Figma; `url` o el SVG en `svg`):
+La extracción usa la **API REST de Figma** con un token personal de solo lectura:
+
+1. En Figma: **Settings → Security → Personal access tokens → Generate new token**, con el scope
+   *File content: read-only*.
+2. Copia `.env.example` a `.env` (en `generate-fonts/`) y pon `FIGMA_TOKEN=<token>`. El `.env` está en
+   `.gitignore`: no se sube nunca. También vale la variable de entorno `FIGMA_TOKEN`.
+
+El token es **de tu cuenta, no de un archivo**: uno solo sirve para todas las fuentes, y cada fuente
+extrae de su propio Figma (el `figma` de su `icons.config.mjs`). Solo hace falta que tu cuenta pueda
+abrir esos archivos: si una fuente da 403/404 y las demás no, pide acceso a su archivo. Cuando el token
+caduque (Figma pide fecha de caducidad al crearlo), genera otro y reemplázalo en `.env`.
+
+### Extraer y generar
+
+```bash
+npm run pull -- incontrol-icons --dry-run   # resumen, no escribe nada
+npm run pull -- incontrol-icons             # reemplaza source/ con lo que hay en Figma
+npm run build -- incontrol-icons
+```
+
+`npm run pull` lee el nodo de `figma` (1 petición), aplica `figmaFilter`, toma los grupos hijos del nodo
+como **categorías** y los iconos sueltos como **sin categoría**, omite capas ocultas e instancias de
+componentes ya incluidos, ordena como el lienzo y exporta los SVG en lotes de 100 (1 petición por lote):
+unas **3 peticiones** para 187 iconos. Los nombres se normalizan (`Arrow Left` → `icon-arrow-left`), y
+los nombres de categoría y el **orden** de Figma se guardan en `source/figma.json`. El `--dry-run`
+muestra iconos por categoría, renombrados, filtrados, instancias omitidas y añadidos / movidos /
+eliminados.
+
+- **Duplicados**: si dos capas dan el mismo nombre de icono, falla sin escribir nada y las lista: hay
+  que renombrar una en Figma.
+- **Eliminados** (Figma manda): lo que ya no está en Figma sale de `source/` y no se genera; su SVG se
+  mueve a **`fonts/<fuente>/trash/`**, con `trash/trash.json` (nombre, categoría, código Unicode y fecha).
+  Ese código queda **reservado** (ningún icono nuevo lo reutiliza) y, si el icono vuelve a Figma con el
+  mismo nombre, recupera su código y sale de `trash/`. `trash/` no forma parte de la fuente ni se
+  exporta. Para olvidar un icono del todo, borra su SVG y su entrada de `trash.json`.
+
+Con Claude Code, **`/generar-fuente`** hace todo esto: pregunta si es una fuente existente o nueva (URL de
+Figma, nombre, prefijo), el filtro de nombre, ejecuta el `--dry-run`, te muestra el resumen, y tras tu
+confirmación extrae y genera.
+
+### Alternativa sin token: MCP de Figma
+
+Sin token, `/generar-fuente` puede leer Figma con el MCP de Figma y descargar cada icono (una llamada
+por icono: lento, y choca con el límite de llamadas del MCP). Escribe un manifiesto y lo aplica con
+`npm run sync -- <fuente> <manifiesto> [--dry-run]`.
+
+**Orden de Figma**: categorías e iconos salen en `icons.json`, el CSS, el JSON y la vista previa HTML
+en el mismo orden que en el lienzo de Figma (de arriba abajo y, en cada fila, de izquierda a derecha),
+para que el diseñador compare su Figma con lo generado. Sin `figma.json` (SVG puestos a mano), el orden
+es alfabético; lo que `figma.json` no liste va al final, en orden alfabético. El orden no afecta a los
+códigos Unicode.
+
+Formato del manifiesto de `npm run sync` (`name`, `layer` y `category` tal cual en Figma; `url` o el
+SVG en `svg`; en orden de Figma). `layer` deja solo el grupo `<g id="<layer>">` del SVG, porque la
+exportación del MCP incluye los fondos de Figma:
 
 ```json
 { "icons": [
-  { "name": "Arrow Left", "category": "Navigation", "url": "https://…" },
-  { "name": "Logo", "category": null, "svg": "<svg …>…</svg>" }
+  { "name": "Arrow Left", "layer": "Arrow Left", "category": "Navigation", "url": "https://…" },
+  { "name": "Logo", "layer": "Logo", "category": null, "svg": "<svg …>…</svg>" }
 ] }
 ```
 
-## Agregar o cambiar iconos a mano
+## Origen local (SVG copiados a mano)
 
-Sin Claude, también puedes poner los SVG a mano (el `figma` sigue siendo obligatorio):
+Para SVG que alguien comparte, sin Figma ni token (`origin: 'local'`; `npm run pull` no aplica):
 
-1. Exporta cada icono como SVG desde Figma.
-2. Guárdalo en `fonts/<fuente>/source/`, de una de estas formas (o mezcladas):
-   - **Por categoría**, si en Figma están agrupados: `source/<categoria>/<prefijo>-<nombre>.svg`.
-   - **Directo**, si en Figma no tienen categoría: `source/<prefijo>-<nombre>.svg`.
-
-   En `incontrol-icons` el prefijo es `icon` (`icon-search.svg`). Reglas:
-   - Categorías y nombres en kebab-case; los nombres empiezan por el `prefix` de la fuente.
-   - Un nombre no se puede repetir, aunque esté en otra categoría o directo en `source/`.
-   - Sin subcarpetas dentro de una categoría (un solo nivel).
-   - Mover un icono entre categorías, o de directo a una categoría, conserva su código.
+1. Crea la fuente: `npm run new -- <fuente> --local [--prefix <prefijo>]`.
+2. Copia los SVG en `fonts/<fuente>/source/`, en carpetas de categoría, sueltos o mezclados:
+   ```
+   source/
+   ├── Navigation/            # carpeta = categoría (su nombre es el nombre visible)
+   │   └── Arrow Left.svg     # cualquier nombre: → icon-arrow-left
+   ├── Business & finance/    # → categoría "Business & finance"
+   │   └── bank.svg           # → icon-bank
+   └── logo.svg               # suelto = sin categoría → icon-logo
+   ```
 3. `npm run build -- <fuente>` y versiona juntos `source/`, `dist/` e `icons.json`.
 
-Nombre visible de cada categoría, por prioridad: `categories` de `icons.config.mjs`
-(`'business-and-finance': 'Business & finance'`), el de Figma guardado en `source/categories.json`, o
-el nombre de la carpeta con mayúscula inicial.
+Reglas (las mismas que valida el build antes de escribir nada):
+
+- Los nombres de archivo y carpeta se **normalizan** solos, igual que con Figma: kebab-case con el
+  prefijo (`Arrow Left.svg` → `icon-arrow-left`). No hace falta renombrar.
+- **Duplicados**: dos archivos que dan el mismo nombre (`Add Item.svg` y `add_item.svg`, aunque estén en
+  carpetas distintas) o dos carpetas que dan la misma categoría: el build falla y los lista.
+- Solo un nivel de carpetas (sin subcarpetas dentro de una categoría).
+- Orden alfabético. Mover un icono entre categorías conserva su código.
+- **Eliminados**: un SVG que borras de `source/` deja de generarse y su código queda **reservado** en
+  `trash/trash.json` (sin archivo); si vuelve con el mismo nombre, recupera su código.
+
+Esto también vale para retocar a mano una fuente de Figma, pero el próximo `npm run pull` reemplaza
+`source/` con lo que haya en Figma.
+
+**Nombre visible de cada categoría**: el de Figma (guardado en `source/figma.json`) en fuentes de Figma;
+en locales, el nombre de la carpeta tal cual (`Business & finance`), o con mayúscula inicial si ya está
+en kebab-case (`navigation` → `Navigation`). Solo si hace falta mostrar otro nombre,
+`categories` de `icons.config.mjs` lo reemplaza (`{ 'business-and-finance': 'Business & finance' }`);
+normalmente se deja vacío.
 
 ## Nueva fuente
 
 Con `/generar-fuente` (opción *nueva*), o a mano:
 
-1. Créala con su URL de Figma:
+1. Créala con su origen:
    ```bash
    npm run new -- incontrol-system --figma "https://www.figma.com/design/<file>/<nombre>?node-id=12-34" --prefix sys --filter sys-
+   npm run new -- shared-icons --local
    ```
-   Crea `fonts/incontrol-system/` con `icons.config.mjs` (`name`, `prefix`, `figma`, `figmaFilter` y los opcionales
-   `startCodepoint` = `0xf101`, `fontHeight` = 1000, `normalize` = true y `categories`), `source/` y
-   `dist/`. El prefijo por defecto es `icon`.
-2. Llena `source/` (con `/generar-fuente` o a mano) y `npm run build -- incontrol-system`. A partir de
-   ahí, `npm run build` ya la incluye.
+   Crea `fonts/<fuente>/` con `icons.config.mjs` (`name`, `prefix`, `origin`; en Figma también `figma` y
+   `figmaFilter`; y los opcionales `startCodepoint` = `0xf101`, `fontHeight` = 1000, `normalize` = true y
+   `categories`), `source/` y `dist/`. El prefijo por defecto es `icon`.
+2. Llena `source/` (Figma: `npm run pull`; local: copia los SVG) y `npm run build -- <fuente>`. A partir
+   de ahí, `npm run build` ya la incluye.
 
 No hace falta tocar `package.json` ni los scripts. Si una fuente necesita otro CSS o vista previa,
 pon su propio `fonts/<fuente>/templates/css.hbs` o `html.hbs` (copia el compartido como base).
 
 ## Exportar a un proyecto
 
-Guía completa: [exportar-iconos.html](exportar-iconos.html) (ábrela en el navegador).
+Guía completa: [reference/exportar-fuente.html](reference/exportar-fuente.html) (ábrela en el navegador).
 
 Copia los 8 archivos de `dist/` y `icons.json` a `<ruta>/<carpeta>/`. Por defecto, `<carpeta>` es el
 nombre de la fuente; los archivos conservan siempre su nombre (`incontrol-icons.*`):
@@ -184,7 +267,7 @@ npm run export -- incontrol-icons "C:/projects/mi-app/src/assets/fonts" --folder
 - Falla si la fuente aún no está generada o si el destino está dentro de `generate-fonts/`.
 - Una ruta relativa se resuelve desde la carpeta donde ejecutas npm.
 
-Con Claude Code: **`/exportar-iconos`** (skill en `.claude/skills/exportar-iconos/`) te pregunta la
+Con Claude Code: **`/exportar-fuente`** (skill en `.claude/skills/exportar-fuente/`) te pregunta la
 fuente, el nombre de la carpeta y la ruta, valida y ejecuta el comando.
 
 Luego el proyecto referencia **la copia**, por ejemplo en `angular.json`:
@@ -204,13 +287,16 @@ Con las mismas entradas, el build produce exactamente los mismos archivos (byte 
 
 ## Parche de fantasticon
 
-`patches/fantasticon+4.1.0.patch` corrige dos fallos de fantasticon 4.1.0. `patch-package` lo aplica
+`patches/fantasticon+4.1.0.patch` corrige tres fallos de fantasticon 4.1.0. `patch-package` lo aplica
 solo al hacer `npm ci` / `npm install`:
 
 1. **Windows**: fantasticon busca los SVG con `glob` usando una ruta con `\`, que glob interpreta como
    escape y no encuentra nada. El parche añade `windowsPathsNoEscape: true`.
 2. **EOT no reproducible**: el `.eot` se copiaba con todo el buffer interno de Node (8 KB con restos de
    memoria). El parche copia solo los bytes de la fuente.
+3. **Orden de los glifos**: el orden en que `glob` devuelve los SVG no está garantizado y define el
+   orden de los glifos en la fuente (y por tanto sus bytes). El parche los ordena para que el build sea
+   siempre idéntico.
 
 Al actualizar fantasticon: cambia la versión en `package.json`, `npm install`. Si `patch-package`
 avisa que el parche no aplica, comprueba si la versión nueva ya corrige esos fallos y borra el parche;

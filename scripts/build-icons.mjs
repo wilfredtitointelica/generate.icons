@@ -3,8 +3,10 @@
 //   fonts/<font>/dist/<name>.{css,eot,html,json,svg,ttf,woff,woff2}   (fantasticon + templates)
 //   fonts/<font>/icons.json                    (categories -> icons and/or uncategorized icons, with codepoints)
 // Codepoints are stable: the previous dist/<name>.json is read first, so an existing icon keeps its
-// codepoint and a new one takes the next free codepoint from startCodepoint. Output is deterministic
-// (categories and icons in alphabetical order). Nothing in dist/ or icons.json is edited by hand.
+// codepoint and a new one takes the next free codepoint from startCodepoint. Output is deterministic:
+// categories and icons follow the Figma order of source/figma.json (written by sync-figma.mjs), and
+// what it does not list goes after, in alphabetical order. Nothing in dist/ or icons.json is edited
+// by hand.
 //
 //   node scripts/build-icons.mjs [font...]
 //   npm run build                       every folder of fonts/ with an icons.config.mjs
@@ -21,10 +23,22 @@ import { FontAssetType, generateFonts, OtherAssetType } from 'fantasticon';
 import Handlebars from 'handlebars';
 import { optimize } from 'svgo';
 
-import { CATEGORIES_FILE, CONFIG_FILE, FONTS_DIR, KEBAB, listFonts, loadConfig, ROOT, toPosix } from './lib/fonts.mjs';
+import {
+  CONFIG_FILE,
+  FIGMA_FILE,
+  FONTS_DIR,
+  listFonts,
+  loadConfig,
+  readTrash,
+  ROOT,
+  slug,
+  toIconName,
+  toPosix,
+  TRASH_DIR,
+  TRASH_FILE,
+} from './lib/fonts.mjs';
 
 const TEMPLATES_DIR = join(ROOT, 'templates');
-const CATEGORY_NAME = new RegExp(`^${KEBAB}$`);
 /** A stroke that is not "none": fonts only render fills, so it would be lost. */
 const STROKE = /\bstroke\s*[:=]\s*["']?(?!none\b)[#\w]/i;
 /** Also the order of @font-face src: browsers take the first format they support. */
@@ -36,7 +50,7 @@ const FONT_TYPES = [
   FontAssetType.SVG,
 ];
 
-const titleCase = (slug) => slug.charAt(0).toUpperCase() + slug.slice(1).replace(/-/g, ' ');
+const titleCase = (text) => text.charAt(0).toUpperCase() + text.slice(1).replace(/-/g, ' ');
 
 function fail(message) {
   console.error(`[build-icons] ${message}`);
@@ -50,11 +64,12 @@ const isSvg = (entry) => entry.isFile() && entry.name.toLowerCase().endsWith('.s
 /**
  * source/ holds category folders (source/<category>/<icon>.svg), SVGs directly (source/<icon>.svg)
  * or both. Returns { categories: [{ slug, category, icons }], icons } with icons as [{ name, path }]:
- * `icons` are the SVGs placed directly in source/ (uncategorized). Validated and sorted.
+ * `icons` are the SVGs placed directly in source/ (uncategorized). Validated and in Figma order.
+ * Names are taken as they come (SVGs copied by hand): "Arrow Left.svg" -> icon-arrow-left and the
+ * folder "Business & finance" -> business-and-finance, shown as "Business & finance".
  */
 function readSource(sourceDir, config) {
   if (!existsSync(sourceDir)) fail(`Missing ${toPosix(sourceDir)}.`);
-  const iconName = new RegExp(`^${config.prefix}-${KEBAB}$`);
   const errors = [];
   const seen = new Map();
 
@@ -67,9 +82,9 @@ function readSource(sourceDir, config) {
         errors.push(`${toPosix(path)}: nested folders are not allowed inside a category.`);
       }
       if (!isSvg(entry)) continue;
-      const name = entry.name.slice(0, -4);
-      if (!iconName.test(name)) {
-        errors.push(`${toPosix(path)}: the name must be kebab-case and start with "${config.prefix}-".`);
+      const name = toIconName(entry.name.slice(0, -4), config.prefix);
+      if (!name) {
+        errors.push(`${toPosix(path)}: the file name has no letters or digits.`);
       } else if (seen.has(name)) {
         errors.push(`${name} is duplicated:\n    - ${toPosix(seen.get(name))}\n    - ${toPosix(path)}`);
       } else {
@@ -77,39 +92,64 @@ function readSource(sourceDir, config) {
         icons.push({ name, path });
       }
     }
-    return icons;
+    return icons.sort((a, b) => a.name.localeCompare(b.name));
   };
 
-  // Display names: categories of the config, else the Figma names saved by sync-figma.mjs, else the
-  // capitalized folder name.
-  const labelsPath = join(sourceDir, CATEGORIES_FILE);
-  let figmaLabels = {};
-  if (existsSync(labelsPath)) {
+  // The Figma names and order saved by sync-figma.mjs, if any.
+  const figmaPath = join(sourceDir, FIGMA_FILE);
+  let figma = { categories: [], icons: [] };
+  if (existsSync(figmaPath)) {
     try {
-      figmaLabels = JSON.parse(readFileSync(labelsPath, 'utf8'));
+      figma = { ...figma, ...JSON.parse(readFileSync(figmaPath, 'utf8')) };
     } catch {
-      errors.push(`${toPosix(labelsPath)} is not valid JSON.`);
+      errors.push(`${toPosix(figmaPath)} is not valid JSON.`);
     }
   }
-  const labelOf = (slug) => config.categories[slug] ?? figmaLabels[slug] ?? titleCase(slug);
+  const figmaCategories = new Map(figma.categories.map((category) => [category.folder, category]));
+  // Display names: categories of the config, else the Figma name, else the folder name as it was
+  // written ("Business & finance"), else the capitalized folder (navigation -> Navigation).
+  const labelOf = (folderSlug, folder) =>
+    config.categories[folderSlug] ??
+    figmaCategories.get(folderSlug)?.name ??
+    (folder.trim() !== folderSlug ? folder.trim() : titleCase(folderSlug));
 
   const entries = sortedEntries(sourceDir);
   const categories = [];
+  const folders = new Map();
   for (const entry of entries.filter((entry) => entry.isDirectory())) {
     const dir = join(sourceDir, entry.name);
-    if (!CATEGORY_NAME.test(entry.name)) {
-      errors.push(`${toPosix(dir)}: category folders are kebab-case (e.g. business-and-finance).`);
+    const folderSlug = slug(entry.name);
+    if (!folderSlug) {
+      errors.push(`${toPosix(dir)}: the folder name has no letters or digits.`);
       continue;
     }
+    if (folders.has(folderSlug)) {
+      errors.push(`Folders "${folders.get(folderSlug)}" and "${entry.name}" are the same category (${folderSlug}).`);
+      continue;
+    }
+    folders.set(folderSlug, entry.name);
     const icons = readIcons(dir, sortedEntries(dir));
     if (icons.length) {
-      categories.push({ slug: entry.name, category: labelOf(entry.name), icons });
+      categories.push({ slug: folderSlug, category: labelOf(folderSlug, entry.name), icons });
     }
   }
+  categories.sort((a, b) => a.slug.localeCompare(b.slug));
   const icons = readIcons(sourceDir, entries);
 
   if (errors.length) fail(`Invalid source:\n  ${errors.join('\n  ')}`);
   if (!seen.size) fail(`No SVGs found in ${toPosix(sourceDir)}/ or its category folders.`);
+
+  // Figma order first; anything figma.json does not list keeps its alphabetical place after it.
+  const byFigma = (order, key) => {
+    const position = new Map(order.map((item, index) => [item, index]));
+    const rank = (item) => position.get(key(item)) ?? Infinity;
+    return (a, b) => rank(a) - rank(b);
+  };
+  categories.sort(byFigma(figma.categories.map((category) => category.folder), (category) => category.slug));
+  for (const category of categories) {
+    category.icons.sort(byFigma(figmaCategories.get(category.slug)?.icons ?? [], (icon) => icon.name));
+  }
+  icons.sort(byFigma(figma.icons, (icon) => icon.name));
   return { categories, icons };
 }
 
@@ -131,7 +171,7 @@ function prepareSvgs(icons, tempDir) {
 }
 
 /** Keeps the codepoint of every icon already in the previous JSON; new icons take the next free one. */
-function assignCodepoints(names, previousJson, start) {
+function assignCodepoints(names, previousJson, start, reserved) {
   let previous = {};
   if (existsSync(previousJson)) {
     try {
@@ -149,6 +189,16 @@ function assignCodepoints(names, previousJson, start) {
       used.add(previous[name]);
     }
   }
+  // The codepoints of the icons in trash/ stay reserved: an icon back from the trash gets its own again,
+  // and no new icon takes one of them.
+  for (const name of names) {
+    const code = reserved.get(name);
+    if (codepoints[name] === undefined && Number.isInteger(code) && !used.has(code)) {
+      codepoints[name] = code;
+      used.add(code);
+    }
+  }
+  for (const code of reserved.values()) if (Number.isInteger(code)) used.add(code);
   let next = start;
   const added = [];
   for (const name of names) {
@@ -162,7 +212,53 @@ function assignCodepoints(names, previousJson, start) {
   // Same order as icons.json (categories, then uncategorized icons), so the CSS and JSON follow it.
   const ordered = Object.fromEntries(names.map((name) => [name, codepoints[name]]));
   const removed = Object.keys(previous).filter((name) => !(name in ordered));
-  return { codepoints: ordered, added, removed };
+  return { codepoints: ordered, added, removed, previous };
+}
+
+function readTrashOrFail(fontDir) {
+  try {
+    return readTrash(fontDir);
+  } catch (error) {
+    fail(error.message);
+  }
+}
+
+/**
+ * Keeps trash/ in step with source/ when SVGs are added or deleted by hand (local fonts): icons gone
+ * from source/ without going through the trash are recorded in trash.json without a file, so their
+ * codepoint stays reserved; icons back in source/ leave the trash.
+ */
+function syncTrash(fontDir, names, removed, previousCodes) {
+  const trashDir = join(fontDir, TRASH_DIR);
+  const present = new Set(names);
+  const all = readTrashOrFail(fontDir);
+  const back = all.filter((entry) => present.has(entry.name));
+  const trash = all.filter((entry) => !present.has(entry.name));
+  const known = new Set(trash.map((entry) => entry.name));
+  const missing = removed.filter((name) => !known.has(name));
+  if (!back.length && !missing.length) return;
+  for (const entry of back) if (entry.file) rmSync(join(trashDir, entry.file), { force: true });
+  const previousTree = existsSync(join(fontDir, 'icons.json'))
+    ? JSON.parse(readFileSync(join(fontDir, 'icons.json'), 'utf8'))
+    : {};
+  const categoryOf = new Map(
+    (previousTree.categories ?? []).flatMap((category) => category.icons.map((icon) => [icon.name, category.category])),
+  );
+  const today = new Date().toISOString().slice(0, 10);
+  for (const name of missing) {
+    trash.push({ name, file: null, category: categoryOf.get(name) ?? null, codepoint: previousCodes[name], removedAt: today });
+  }
+  // Category folders the icons back in source/ leave empty.
+  for (const entry of existsSync(trashDir) ? readdirSync(trashDir, { withFileTypes: true }) : []) {
+    const dir = join(trashDir, entry.name);
+    if (entry.isDirectory() && !readdirSync(dir).length) rmSync(dir, { recursive: true });
+  }
+  if (!trash.length) {
+    rmSync(trashDir, { recursive: true, force: true });
+    return;
+  }
+  mkdirSync(trashDir, { recursive: true });
+  writeFileSync(join(trashDir, TRASH_FILE), `${JSON.stringify({ icons: trash }, null, 2)}\n`);
 }
 
 /** The font's own templates/<file> if it has one, else the shared one. */
@@ -178,10 +274,11 @@ async function build(fontDir) {
 
   const { categories, icons } = readSource(sourceDir, config);
   const allIcons = [...categories.flatMap((category) => category.icons), ...icons];
-  const { codepoints, added, removed } = assignCodepoints(
+  const { codepoints, added, removed, previous } = assignCodepoints(
     allIcons.map(({ name }) => name),
     join(distDir, `${config.name}.json`),
     config.startCodepoint,
+    new Map(readTrashOrFail(fontDir).map((entry) => [entry.name, entry.codepoint])),
   );
 
   // icons.json: "categories" when source/ has category folders, "icons" when it has SVGs directly
@@ -224,6 +321,7 @@ async function build(fontDir) {
     writeFileSync(join(outDir, `${config.name}.html`), html({ name: config.name, sections, total }));
     writeFileSync(join(outDir, `${config.name}.json`), `${JSON.stringify(codepoints, null, 2)}\n`);
 
+    syncTrash(fontDir, Object.keys(codepoints), removed, previous);
     rmSync(distDir, { recursive: true, force: true });
     cpSync(outDir, distDir, { recursive: true });
     writeFileSync(join(fontDir, 'icons.json'), `${JSON.stringify(tree, null, 2)}\n`);

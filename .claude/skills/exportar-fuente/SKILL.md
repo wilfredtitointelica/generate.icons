@@ -1,6 +1,6 @@
 ---
-name: exportar-iconos
-description: Copia una fuente de iconos generada en generate-fonts/fonts/<fuente>/ (incontrol-icons, incontrol-system, …) a una carpeta de un proyecto, para que el proyecto use esa copia y nunca referencie generate-fonts/. Copia los 8 archivos de dist/ (css, eot, html, json, svg, ttf, woff, woff2) y el icons.json (iconos por categoría y/o sin categoría). Pregunta la fuente (si hay varias), el nombre de la carpeta a crear y la ruta donde crearla. Úsalo cuando el usuario diga "exporta los iconos", "copia incontrol-icons a <ruta>", "lleva la fuente de iconos al proyecto X", "actualiza los iconos en <proyecto>" o /exportar-iconos.
+name: exportar-fuente
+description: Copia una fuente de iconos generada en generate-fonts/fonts/<fuente>/ (incontrol-icons, incontrol-system, …) a una carpeta de un proyecto, para que el proyecto use esa copia y nunca referencie generate-fonts/. Copia los 8 archivos de dist/ (css, eot, html, json, svg, ttf, woff, woff2) y el icons.json (iconos por categoría y/o sin categoría). Pregunta la fuente (si hay varias), el nombre de la carpeta a crear y la ruta donde crearla. Úsalo cuando el usuario diga "exporta la fuente", "exporta los iconos", "copia incontrol-icons a <ruta>", "lleva la fuente de iconos al proyecto X", "actualiza los iconos en <proyecto>" o /exportar-fuente.
 argument-hint: "[fuente] [ruta] [nombre-carpeta]"
 ---
 

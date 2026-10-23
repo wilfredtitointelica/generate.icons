@@ -1,0 +1,244 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Generar fuente</title>
+  <link rel="stylesheet" href="reference.css">
+</head>
+<body>
+<main>
+  <p class="crumb"><a href="index.html">← Referencia de generate-fonts</a></p>
+  <h1>Generar una fuente</h1>
+  <p class="lead">
+    Cómo crear o regenerar una fuente de iconos desde su <strong>Figma</strong> o desde una
+    <strong>carpeta de SVG</strong> que alguien te compartió, con el skill <code>/generar-fuente</code> o
+    con los comandos de <code>generate-fonts/</code>.
+  </p>
+
+  <nav aria-label="Contenido">
+    <ol>
+      <li><a href="#origenes">Dos orígenes</a></li>
+      <li><a href="#skill">Con Claude Code: /generar-fuente</a></li>
+      <li><a href="#figma">Origen Figma</a></li>
+      <li><a href="#local">Origen local (carpeta de SVG)</a></li>
+      <li><a href="#nombres">Nombres y categorías</a></li>
+      <li><a href="#duplicados">Duplicados</a></li>
+      <li><a href="#eliminados">Iconos eliminados (trash/)</a></li>
+      <li><a href="#resultado">Qué se genera</a></li>
+      <li><a href="#errores">Mensajes de error</a></li>
+    </ol>
+  </nav>
+
+  <h2 id="origenes">1. Dos orígenes</h2>
+  <p>
+    Cada fuente vive en <code>generate-fonts/fonts/&lt;fuente&gt;/</code> y registra en su
+    <code>icons.config.mjs</code> <strong>de dónde salen sus iconos</strong> (campo <code>origin</code>):
+  </p>
+  <div class="table-wrap">
+    <table>
+      <thead>
+        <tr><th><code>origin</code></th><th>Cuándo</th><th>Cómo se llena <code>source/</code></th><th>Generar</th></tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td><code>'figma'</code></td>
+          <td>Los iconos están en un archivo de Figma.</td>
+          <td><code>npm run pull -- &lt;fuente&gt;</code> lee el nodo de Figma (<a href="configurar-token.html">necesita token</a>).</td>
+          <td rowspan="2"><code>npm run build -- &lt;fuente&gt;</code></td>
+        </tr>
+        <tr>
+          <td><code>'local'</code></td>
+          <td>Te comparten los SVG (sueltos o en carpetas).</td>
+          <td>Copias los SVG a mano en <code>source/</code>.</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+<pre><code>origin 'figma':  Figma ──── npm run pull ───▶ source/ ── npm run build ──▶ dist/ + icons.json
+origin 'local':  SVG ────── copiar a mano ──▶ source/ ── npm run build ──▶ dist/ + icons.json</code></pre>
+
+  <h2 id="skill">2. Con Claude Code: <code>/generar-fuente</code></h2>
+  <p>
+    El skill está en <code>generate-fonts/.claude/skills/generar-fuente/</code>. Invócalo con
+    <code>/generar-fuente</code> o en lenguaje natural: “regenera incontrol-icons”, “crea una fuente nueva
+    desde Figma”, “ya copié los SVG en source de shared-icons, genérala”.
+  </p>
+  <ol class="steps">
+    <li>
+      Pregunta si es una fuente <strong>existente</strong> (lista las fuentes con su origen) o
+      <strong>nueva</strong>.
+    </li>
+    <li>
+      Si es nueva, pregunta el <strong>origen</strong>: Figma (URL del frame de iconos, nombre, prefijo y
+      filtro de capas, p. ej. <code>icon-</code>) o carpeta local (nombre y prefijo), y la crea con
+      <code>npm run new</code>.
+    </li>
+    <li>
+      <strong>Figma</strong>: ejecuta la simulación (<code>npm run pull -- &lt;fuente&gt; --dry-run</code>),
+      te resume categorías, renombrados, añadidos y eliminados, extrae y genera.
+      <strong>Local</strong>: revisa <code>source/</code> (o copia ahí la carpeta que le indiques) y genera.
+    </li>
+    <li>
+      Te informa del total de iconos, los cambios, los avisos y dónde ver la vista previa, y te ofrece
+      llevarla al proyecto con <a href="exportar-fuente.html"><code>/exportar-fuente</code></a>.
+    </li>
+  </ol>
+  <div class="note">
+    Al estar dentro de <code>generate-fonts/</code>, el skill puede que solo aparezca en una sesión nueva de
+    Claude Code. Sin Claude, los comandos de las secciones 3 y 4 hacen lo mismo.
+  </div>
+
+  <h2 id="figma">3. Origen Figma</h2>
+  <h3>Crear la fuente</h3>
+<pre><code>cd generate-fonts
+npm run new -- incontrol-system --figma "https://www.figma.com/design/&lt;file&gt;/&lt;nombre&gt;?node-id=12-34" --prefix sys --filter sys-</code></pre>
+  <ul>
+    <li><code>--figma</code>: enlace al frame o sección de iconos, con <code>node-id</code> (en Figma: <em>Copy link to selection</em>).</li>
+    <li><code>--filter</code>: solo las capas cuyo nombre empieza por ese texto son iconos (opcional; sin él, todos los componentes).</li>
+    <li>Los grupos hijos del nodo son las <strong>categorías</strong>; los iconos sueltos, <strong>sin categoría</strong>.</li>
+  </ul>
+  <h3>Extraer y generar</h3>
+<pre><code>npm run pull -- incontrol-system --dry-run   <span class="comment"># resumen, no escribe nada</span>
+npm run pull -- incontrol-system             <span class="comment"># source/ = lo que hay en Figma</span>
+npm run build -- incontrol-system</code></pre>
+  <p>
+    Necesita el token de Figma: <a href="configurar-token.html">Conectar con Figma</a>. Las categorías y
+    los iconos salen <strong>en el orden del lienzo</strong> de Figma.
+  </p>
+
+  <h2 id="local">4. Origen local (carpeta de SVG)</h2>
+  <h3>Crear la fuente</h3>
+<pre><code>npm run new -- shared-icons --local --prefix icon</code></pre>
+  <h3>Copiar los SVG</h3>
+  <p>Copia lo que te compartieron en <code>generate-fonts/fonts/shared-icons/source/</code>, tal como venga:</p>
+<pre><code>source/
+├── Navigation/            <span class="comment"># carpeta = categoría</span>
+│   ├── Arrow Left.svg     <span class="comment"># → icon-arrow-left</span>
+│   └── icon-nav-up.svg    <span class="comment"># → icon-nav-up</span>
+├── Business &amp; finance/    <span class="comment"># → categoría "Business &amp; finance"</span>
+│   └── bank.svg           <span class="comment"># → icon-bank</span>
+└── logo.svg               <span class="comment"># suelto = sin categoría → icon-logo</span></code></pre>
+  <ul>
+    <li><strong>Con categorías</strong>: una carpeta por categoría (un solo nivel, sin subcarpetas).</li>
+    <li><strong>Sin categorías</strong>: todos los SVG directamente en <code>source/</code>.</li>
+    <li>Se pueden mezclar las dos formas.</li>
+    <li>No hace falta renombrar nada: los nombres se normalizan al generar.</li>
+  </ul>
+  <h3>Generar</h3>
+<pre><code>npm run build -- shared-icons</code></pre>
+  <p>
+    El build valida <code>source/</code> antes de escribir nada y genera <code>dist/</code> e
+    <code>icons.json</code>. Las categorías y los iconos salen en orden alfabético.
+    <code>npm run pull</code> no aplica a una fuente local.
+  </p>
+  <div class="note">
+    Una fuente solo dibuja <strong>rellenos</strong>: si un SVG usa trazos (<code>stroke</code>), el build
+    avisa y en la fuente saldría vacío. Pide a quien lo compartió el SVG con los trazos convertidos a
+    relleno (en Figma: <em>Outline stroke</em> + <em>Flatten</em>).
+  </div>
+
+  <h2 id="nombres">5. Nombres y categorías</h2>
+  <div class="table-wrap">
+    <table>
+      <thead>
+        <tr><th>En Figma o en la carpeta</th><th>Icono / categoría generada</th></tr>
+      </thead>
+      <tbody>
+        <tr><td><code>Arrow Left</code> / <code>Arrow Left.svg</code></td><td><code>icon-arrow-left</code> (clase <code>.icon-arrow-left</code>)</td></tr>
+        <tr><td><code>icon-search</code></td><td><code>icon-search</code> (el prefijo no se repite)</td></tr>
+        <tr><td><code>coins_icon.svg</code></td><td><code>icon-coins-icon</code></td></tr>
+        <tr><td>Carpeta o grupo <code>Business &amp; finance</code></td><td>carpeta <code>business-and-finance</code>, mostrada como “Business &amp; finance”</td></tr>
+        <tr><td>Carpeta <code>navigation</code></td><td>mostrada como “Navigation”</td></tr>
+      </tbody>
+    </table>
+  </div>
+  <p>
+    Para mostrar una categoría con otro nombre, añádela a <code>categories</code> en
+    <code>icons.config.mjs</code> (<code>{ 'business-and-finance': 'Finanzas' }</code>). Normalmente se deja
+    vacío.
+  </p>
+
+  <h2 id="duplicados">6. Duplicados</h2>
+  <p>
+    Dos iconos no pueden acabar con el mismo nombre, aunque estén en categorías distintas. Si pasa (por
+    ejemplo <code>Add Item.svg</code> y <code>add_item.svg</code>, o dos capas de Figma iguales), no se
+    genera nada y se listan las rutas: renombra o borra uno (en Figma o en <code>source/</code>) y vuelve a
+    generar. Lo mismo con dos carpetas que dan la misma categoría (<code>Business &amp; finance</code> y
+    <code>business-and-finance</code>).
+  </p>
+
+  <h2 id="eliminados">7. Iconos eliminados (<code>trash/</code>)</h2>
+  <p>
+    Lo que ya no está en Figma, o el SVG que borras de <code>source/</code>, <strong>no se genera</strong>.
+    Queda registrado en <code>fonts/&lt;fuente&gt;/trash/</code>:
+  </p>
+  <ul>
+    <li><code>trash/trash.json</code>: nombre, categoría, <strong>código Unicode</strong> y fecha de cada icono eliminado.</li>
+    <li>Origen Figma: también se guarda su SVG (<code>trash/&lt;categoría&gt;/&lt;icono&gt;.svg</code>). Origen local: solo la entrada, porque el SVG lo borraste tú.</li>
+    <li>Su código queda <strong>reservado</strong>: ningún icono nuevo lo reutiliza.</li>
+    <li>Si el icono vuelve (a Figma o a <code>source/</code>) con el mismo nombre, recupera su código y sale de <code>trash/</code>.</li>
+    <li><code>trash/</code> no forma parte de la fuente: no sale en <code>dist/</code>, en <code>icons.json</code> ni al exportar.</li>
+    <li>Para olvidar un icono del todo (y liberar su código), borra su entrada de <code>trash.json</code> y su SVG.</li>
+  </ul>
+
+  <h2 id="resultado">8. Qué se genera</h2>
+<pre><code>fonts/&lt;fuente&gt;/
+├── source/              <span class="comment"># los SVG (de Figma o copiados)</span>
+├── dist/                <span class="comment"># GENERADO: &lt;fuente&gt;.css, .woff2, .woff, .ttf, .eot, .svg, .html, .json</span>
+├── icons.json           <span class="comment"># GENERADO: categorías → iconos, con su código</span>
+└── trash/               <span class="comment"># iconos eliminados (si los hay)</span></code></pre>
+  <p>
+    Revisa <code>dist/&lt;fuente&gt;.html</code> en el navegador (vista previa con buscador) y llévala al
+    proyecto con <a href="exportar-fuente.html">Exportar fuente</a>. Los códigos Unicode se conservan por
+    nombre entre generaciones.
+  </p>
+
+  <h2 id="errores">9. Mensajes de error</h2>
+  <div class="table-wrap">
+    <table>
+      <thead>
+        <tr><th>Mensaje</th><th>Causa</th><th>Solución</th></tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td class="err">… is duplicated</td>
+          <td>Dos SVG o capas dan el mismo nombre de icono.</td>
+          <td>Renombra o borra uno y vuelve a generar.</td>
+        </tr>
+        <tr>
+          <td class="err">Folders "…" and "…" are the same category</td>
+          <td>Dos carpetas de <code>source/</code> dan la misma categoría.</td>
+          <td>Une sus SVG en una sola carpeta.</td>
+        </tr>
+        <tr>
+          <td class="err">… nested folders are not allowed inside a category</td>
+          <td>Subcarpetas dentro de una categoría.</td>
+          <td>Deja un solo nivel de carpetas.</td>
+        </tr>
+        <tr>
+          <td class="err">No SVGs found in …</td>
+          <td><code>source/</code> está vacío.</td>
+          <td>Copia los SVG (local) o ejecuta <code>npm run pull</code> (Figma).</td>
+        </tr>
+        <tr>
+          <td class="err">… is a local font (origin: 'local')</td>
+          <td><code>npm run pull</code> sobre una fuente local.</td>
+          <td>Usa <code>npm run build -- &lt;fuente&gt;</code>.</td>
+        </tr>
+        <tr>
+          <td class="err">… has no Figma URL</td>
+          <td>Fuente de Figma sin <code>figma</code> registrado.</td>
+          <td>Regístralo en <code>icons.config.mjs</code>, o pon <code>origin: 'local'</code> si sus SVG se copian a mano.</td>
+        </tr>
+        <tr>
+          <td class="err">Missing FIGMA_TOKEN / 403 / 404</td>
+          <td>Problemas con el token o el acceso al archivo de Figma.</td>
+          <td>Ver <a href="configurar-token.html#errores">Conectar con Figma → Mensajes de error</a>.</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+</main>
+</body>
+</html>

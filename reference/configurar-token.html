@@ -1,0 +1,251 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Conectar con Figma</title>
+  <link rel="stylesheet" href="reference.css">
+</head>
+<body>
+<main>
+  <p class="crumb"><a href="index.html">← Referencia de generate-fonts</a></p>
+  <h1>Conectar con Figma (token)</h1>
+  <p class="lead">
+    Cómo crear y configurar el token personal de Figma que usa <code>npm run pull</code> para extraer los
+    iconos de cada fuente directamente desde su archivo de Figma.
+  </p>
+
+  <nav aria-label="Contenido">
+    <ol>
+      <li><a href="#para-que">Para qué sirve</a></li>
+      <li><a href="#antes">Antes de empezar</a></li>
+      <li><a href="#crear">Crear el token</a></li>
+      <li><a href="#guardar">Guardarlo en .env</a></li>
+      <li><a href="#probar">Probar la conexión</a></li>
+      <li><a href="#varias">Un token, varias fuentes</a></li>
+      <li><a href="#generar">Generar la fuente</a></li>
+      <li><a href="#seguridad">Seguridad</a></li>
+      <li><a href="#caducidad">Caducidad y renovación</a></li>
+      <li><a href="#errores">Mensajes de error</a></li>
+    </ol>
+  </nav>
+
+  <h2 id="para-que">1. Para qué sirve</h2>
+  <p>
+    <code>npm run pull</code> lee el nodo de Figma registrado en cada fuente y descarga sus iconos como SVG
+    usando la <strong>API REST de Figma</strong>. La API pide identificarse con un <strong>token
+    personal</strong> (personal access token) de tu cuenta de Figma.
+  </p>
+<pre><code>Figma (nodo de iconos)
+      │  npm run pull  ← FIGMA_TOKEN
+      ▼
+generate-fonts/fonts/&lt;fuente&gt;/source/   →   npm run build   →   dist/ + icons.json</code></pre>
+  <p>
+    Con el token, extraer cientos de iconos cuesta unas <strong>3 peticiones</strong> (1 para la
+    estructura y 1 por cada 100 iconos). Sin token, la alternativa es el MCP de Figma desde Claude, que
+    hace una llamada por icono y choca con el límite de llamadas del plan.
+  </p>
+
+  <h2 id="antes">2. Antes de empezar</h2>
+  <ul>
+    <li>Una cuenta de Figma que pueda <strong>abrir</strong> los archivos de Figma de las fuentes.</li>
+    <li>Node.js 22 o superior y las dependencias instaladas en <code>generate-fonts/</code>: <code>npm ci</code>.</li>
+    <li>
+      Cada fuente con su URL de Figma registrada en <code>figma</code> de su
+      <code>fonts/&lt;fuente&gt;/icons.config.mjs</code> (lo hace <code>npm run new</code> o
+      <code>/generar-fuente</code>).
+    </li>
+  </ul>
+
+  <h2 id="crear">3. Crear el token</h2>
+  <ol class="steps">
+    <li>Abre Figma (web o escritorio) con tu cuenta.</li>
+    <li>Abre el menú de tu cuenta (tu avatar o nombre) y entra en <strong>Settings</strong>.</li>
+    <li>Ve a la pestaña <strong>Security</strong> y busca la sección <strong>Personal access tokens</strong>.</li>
+    <li>Pulsa <strong>Generate new token</strong>.</li>
+    <li>
+      Ponle un <strong>nombre</strong> que diga para qué y dónde se usa, por ejemplo
+      <code>generate-fonts – PC de Christian</code>.
+    </li>
+    <li>Elige la <strong>caducidad</strong> (Figma la pide; anota la fecha para renovarlo a tiempo).</li>
+    <li>
+      En los permisos (<em>scopes</em>), marca solo <strong>File content: Read-only</strong>. No hace
+      falta ningún otro.
+    </li>
+    <li>
+      Pulsa <strong>Generate token</strong> y <strong>cópialo en ese momento</strong>: Figma lo muestra una
+      sola vez. Si lo pierdes, genera otro.
+    </li>
+  </ol>
+  <div class="note">
+    Los nombres exactos de los menús pueden variar un poco según la versión de Figma. Lo importante:
+    token personal, con permiso de <strong>solo lectura del contenido de archivos</strong>.
+  </div>
+
+  <h2 id="guardar">4. Guardarlo en <code>.env</code></h2>
+  <p>
+    El token se guarda en <code>generate-fonts/.env</code>. Ese archivo está en el
+    <code>.gitignore</code>: <strong>no se sube nunca</strong> al repositorio. Hay una plantilla,
+    <code>.env.example</code>.
+  </p>
+  <h3>PowerShell</h3>
+<pre><code>cd generate-fonts
+Copy-Item .env.example .env
+notepad .env</code></pre>
+  <h3>Git Bash / macOS / Linux</h3>
+<pre><code>cd generate-fonts
+cp .env.example .env
+code .env      <span class="comment"># o el editor que uses</span></code></pre>
+  <p>Deja la línea así, con tu token y sin comillas ni espacios:</p>
+<pre><code>FIGMA_TOKEN=figd_xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx</code></pre>
+  <p>Comprueba que git lo ignora (debe imprimir la regla de <code>.gitignore</code>):</p>
+<pre><code>git check-ignore -v .env</code></pre>
+  <p>
+    También vale definir la variable de entorno <code>FIGMA_TOKEN</code> en vez del archivo (por ejemplo en
+    un servidor de CI, como <em>secret</em>). Si existe, tiene prioridad sobre <code>.env</code>.
+  </p>
+
+  <h2 id="probar">5. Probar la conexión</h2>
+  <p>Desde <code>generate-fonts/</code>, una simulación que solo lee de Figma y no escribe nada:</p>
+<pre><code>npm run pull -- incontrol-icons --dry-run</code></pre>
+  <p>Si el token funciona, verás el resumen de lo que hay en Figma:</p>
+<pre><code>[pull-figma] incontrol-icons: 187 icons from Figma (32 categories) [dry run]
+  Navigation: 14
+  Actions: 10
+  Business and finance: 19
+  …
+  renamed (4): "icon-portafolio analysis" -> icon-portafolio-analysis, …
+  skipped instances (2): icon-profitability-summary, icon-profitability-reports_02
+[pull-figma] 1 Figma API request(s).</code></pre>
+  <p>
+    Si sale un error, busca el mensaje en <a href="#errores">Mensajes de error</a>.
+  </p>
+
+  <h2 id="varias">6. Un token, varias fuentes</h2>
+  <p>
+    El token es <strong>de tu cuenta, no de un archivo</strong>. No hay que configurar nada en cada Figma:
+    uno solo sirve para todas las fuentes, y cada fuente extrae de <strong>su propio</strong> Figma.
+  </p>
+  <div class="table-wrap">
+    <table>
+      <thead>
+        <tr><th>Fuente</th><th>De dónde extrae (<code>figma</code> en su <code>icons.config.mjs</code>)</th><th>Token</th></tr>
+      </thead>
+      <tbody>
+        <tr><td><code>incontrol-icons</code></td><td>Archivo de Figma A, nodo de sus iconos</td><td rowspan="2">El mismo <code>FIGMA_TOKEN</code></td></tr>
+        <tr><td><code>otros-icons</code></td><td>Archivo de Figma B, nodo de sus iconos</td></tr>
+      </tbody>
+    </table>
+  </div>
+<pre><code>npm run pull -- incontrol-icons   <span class="comment"># lee el Figma de incontrol-icons</span>
+npm run pull -- otros-icons       <span class="comment"># lee el Figma de otros-icons</span></code></pre>
+  <p>
+    Solo hace falta que tu cuenta pueda abrir esos archivos. Si una fuente falla con 403/404 y las demás
+    no, lo normal es que tu cuenta no tenga acceso a su archivo: pide acceso al dueño del Figma.
+  </p>
+
+  <h2 id="generar">7. Generar la fuente</h2>
+  <p>
+    Resumen para fuentes de Figma; la guía completa (también para fuentes locales, sin token) está en
+    <a href="generar-fuente.html">Generar fuente</a>.
+  </p>
+  <ol class="steps">
+    <li>Simular y revisar el resumen: <code>npm run pull -- &lt;fuente&gt; --dry-run</code>.</li>
+    <li>Extraer (reemplaza <code>source/</code> con lo que hay en Figma): <code>npm run pull -- &lt;fuente&gt;</code>.</li>
+    <li>Generar <code>dist/</code> e <code>icons.json</code>: <code>npm run build -- &lt;fuente&gt;</code>.</li>
+    <li>Llevarla al proyecto: <a href="exportar-fuente.html">Exportar fuente</a>.</li>
+  </ol>
+  <ul>
+    <li>
+      <strong>Duplicados</strong>: si dos capas de Figma dan el mismo nombre de icono, <code>pull</code> no
+      escribe nada y las lista; renombra una en Figma.
+    </li>
+    <li>
+      <strong>Eliminados</strong>: un icono que ya no está en Figma no se genera; su SVG se guarda en
+      <code>fonts/&lt;fuente&gt;/trash/</code> con su código Unicode reservado. Si vuelve a Figma, recupera
+      su código.
+    </li>
+  </ul>
+  <p>
+    Con Claude Code, <code>/generar-fuente</code> hace los tres primeros pasos: pregunta la fuente (o crea
+    una nueva con su URL de Figma), ejecuta la simulación, te muestra el resumen y, con tu confirmación,
+    extrae y genera.
+  </p>
+
+  <h2 id="seguridad">8. Seguridad</h2>
+  <ul>
+    <li><span class="err">No</span> subas el token a git, no lo pegues en chats (tampoco a Claude) ni en tickets o capturas.</li>
+    <li>Usa solo el permiso <strong>File content: Read-only</strong>: el script nunca escribe en Figma.</li>
+    <li>Un token por persona y equipo; el nombre del token ayuda a saber cuál revocar.</li>
+    <li>
+      Si se filtra, <strong>revócalo</strong> en Figma (Settings → Security → Personal access tokens) y
+      genera otro.
+    </li>
+    <li>El script nunca muestra el token en la consola.</li>
+  </ul>
+
+  <h2 id="caducidad">9. Caducidad y renovación</h2>
+  <p>
+    Cuando el token caduca, <code>npm run pull</code> responde con un 403 en <strong>todas</strong> las
+    fuentes. Para renovarlo:
+  </p>
+  <ol class="steps">
+    <li>Genera un token nuevo (<a href="#crear">paso 3</a>).</li>
+    <li>Reemplaza el valor de <code>FIGMA_TOKEN</code> en <code>generate-fonts/.env</code>.</li>
+    <li>Revoca el anterior en Figma si aún aparece.</li>
+    <li>Prueba con <code>npm run pull -- &lt;fuente&gt; --dry-run</code>.</li>
+  </ol>
+
+  <h2 id="errores">10. Mensajes de error</h2>
+  <div class="table-wrap">
+    <table>
+      <thead>
+        <tr><th>Mensaje</th><th>Causa</th><th>Solución</th></tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td class="err">Missing FIGMA_TOKEN…</td>
+          <td>No hay <code>.env</code> o la línea está vacía, y no existe la variable de entorno.</td>
+          <td>Sigue <a href="#crear">Crear el token</a> y <a href="#guardar">Guardarlo en .env</a>.</td>
+        </tr>
+        <tr>
+          <td class="err">Figma refused the token (403) … Invalid token</td>
+          <td>Token mal copiado, revocado o caducado.</td>
+          <td>Revisa la línea de <code>.env</code> (sin comillas ni espacios) o <a href="#caducidad">renuévalo</a>.</td>
+        </tr>
+        <tr>
+          <td class="err">Figma refused the token (403)</td>
+          <td>Solo en una fuente: tu cuenta no tiene acceso a ese archivo de Figma.</td>
+          <td>Pide acceso al archivo al dueño del Figma.</td>
+        </tr>
+        <tr>
+          <td class="err">Figma file or node not found (404)</td>
+          <td>La URL de <code>figma</code> apunta a un archivo o nodo que no existe (borrado, movido o mal copiado).</td>
+          <td>En Figma, selecciona el frame de iconos, <em>Copy link to selection</em> y actualiza <code>figma</code> en su <code>icons.config.mjs</code>.</td>
+        </tr>
+        <tr>
+          <td class="err">… has no Figma URL</td>
+          <td>La fuente no tiene <code>figma</code> registrado.</td>
+          <td>Regístralo en su <code>icons.config.mjs</code> o con <code>/generar-fuente</code>.</td>
+        </tr>
+        <tr>
+          <td class="err">Figma rate limit (429), retry after …</td>
+          <td>Demasiadas peticiones seguidas a la API de Figma.</td>
+          <td>El script ya reintenta solo con esperas cortas; si pide esperar más, espera ese tiempo y repite.</td>
+        </tr>
+        <tr>
+          <td class="err">No icons in "…" whose name starts with "…"</td>
+          <td>El filtro <code>figmaFilter</code> no coincide con ninguna capa, o el nodo no es el de los iconos.</td>
+          <td>Revisa <code>figmaFilter</code> y la URL de <code>figma</code>.</td>
+        </tr>
+        <tr>
+          <td class="err">Invalid icons: … is duplicated</td>
+          <td>Dos capas de Figma dan el mismo nombre de icono.</td>
+          <td>Renombra una de ellas en Figma y vuelve a ejecutar.</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+</main>
+</body>
+</html>
