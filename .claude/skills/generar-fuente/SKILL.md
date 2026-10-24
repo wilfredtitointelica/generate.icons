@@ -318,4 +318,11 @@ En pocas líneas: fuente, origen (URL de Figma registrada, o local), total de ic
 categoría), nombres que se normalizaron (en local, los archivos renombrados al generar),
 añadidos / eliminados respecto a la versión anterior (los eliminados, movidos a `trash/`; los que
 volvieron de `trash/`), avisos de `stroke`, y la ruta de la vista previa
-`fonts/<fuente>/dist/<fuente>.html`. Ofrece exportarla al proyecto con `/exportar-fuente`.
+`fonts/<fuente>/dist/<fuente>.html`.
+
+Luego, la exportación: mira `npm run export -- <fuente> --list`.
+
+- **Con destinos registrados**: pregunta "¿Exporto a los N proyectos registrados?" y lístalos (nombre →
+  ruta). Con un sí, `npm run export -- <fuente>` (o `--only <nombre>,…` si elige algunos); se sobrescriben
+  sin `--force`. Responde con las rutas actualizadas.
+- **Sin destinos**: ofrece exportarla con `/exportar-fuente`, que permite registrarlos para la próxima vez.

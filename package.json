@@ -11,6 +11,7 @@
     "build": "node scripts/build-icons.mjs",
     "postinstall": "patch-package",
     "export": "node scripts/export-icons.mjs",
+    "release": "node scripts/release-icons.mjs",
     "new": "node scripts/new-font.mjs",
     "sync": "node scripts/sync-figma.mjs",
     "pull": "node scripts/pull-figma.mjs"

@@ -30,7 +30,9 @@ Desde `generate.icons/` (requiere Node ≥ 22):
 | `npm run sync -- <fuente> <manifiesto.json> [--dry-run]` | Igual, a partir de un manifiesto (alternativa sin token, con el MCP de Figma). |
 | `npm run build` | Genera **todas** las fuentes de `fonts/` (cada carpeta con `icons.config.mjs`). |
 | `npm run build -- <fuente> [<fuente>…]` | Genera solo esas fuentes, por ejemplo `npm run build -- incontrol-icons`. |
-| `npm run export -- <fuente> <ruta> [<ruta>…] [--folder <carpeta>] [--force]` | Copia una fuente generada a `<ruta>/<carpeta>/`, en una o varias rutas (ver [Exportar a un proyecto](#exportar-a-un-proyecto)). |
+| `npm run export -- <fuente> <ruta> [<ruta>…] [--folder <carpeta>] [--force] [--save]` | Copia una fuente generada a `<ruta>/<carpeta>/`, en una o varias rutas; con `--save` además las registra (ver [Exportar a un proyecto](#exportar-a-un-proyecto)). |
+| `npm run export -- <fuente> [--only <nombre>,…]` · `--list` | Exporta a los destinos registrados de la fuente (o solo a esos) · los lista. |
+| `npm run release -- <fuente> [--only <nombre>,…]` | `build` + `export` a los destinos registrados: el paso a repetir cada vez que cambian los iconos. |
 
 ## Estructura
 
@@ -45,6 +47,7 @@ generate.icons/
 │   ├── sync-figma.mjs             # manifiesto (MCP) → source/
 │   ├── build-icons.mjs            # generador (todas las fuentes o las indicadas)
 │   ├── export-icons.mjs           # copia una fuente generada a un proyecto
+│   ├── release-icons.mjs          # build + export a los destinos registrados
 │   └── lib/                       # fonts.mjs (config) y sync.mjs (escribir source/), comunes
 ├── templates/                     # plantillas compartidas por todas las fuentes
 │   ├── css.hbs                    # @font-face + .<prefijo>-nombre::before
@@ -273,12 +276,47 @@ npm run export -- incontrol-icons "C:/projects/app-a/src/assets/fonts" "C:/proje
 - Falla si la fuente aún no está generada o si el destino está dentro de `generate.icons/`.
 - Una ruta relativa se resuelve desde la carpeta donde ejecutas npm.
 
-Con Claude Code: **`/exportar-fuente`** (skill en `.claude/skills/exportar-fuente/`) te pregunta la
-fuente, el nombre de la carpeta y la ruta, valida y ejecuta el comando.
+### Destinos registrados
+
+Para no volver a escribir las rutas en cada cambio de iconos, regístralas **una vez** con `--save`:
+
+```bash
+npm run export -- incontrol-icons "C:/projects/app-a/src/assets/fonts" "C:/projects/app-b/src/assets/fonts" --save
+```
+
+Quedan en `fonts/<fuente>/export.local.json` (ignorado por git: las rutas son de tu máquina), con el
+nombre del repositorio de cada ruta (o `--name`, con una sola ruta). `folder` es opcional y permite otro
+nombre de carpeta por proyecto:
+
+```json
+{
+  "targets": [
+    { "name": "app-a", "path": "C:/projects/app-a/src/assets/fonts" },
+    { "name": "app-b", "path": "C:/projects/app-b/src/assets/fonts", "folder": "icons" }
+  ]
+}
+```
+
+A partir de ahí:
+
+```bash
+npm run release -- incontrol-icons             # genera y exporta a todos los registrados
+npm run export -- incontrol-icons              # solo exporta a todos los registrados
+npm run export -- incontrol-icons --only app-a # solo a ese
+npm run export -- incontrol-icons --list       # muestra los registrados
+```
+
+Los destinos registrados se sobrescriben sin `--force` (solo los 9 archivos). Para cambiar o quitar uno,
+edita el JSON.
+
+Con Claude Code: **`/exportar-fuente`** (skill en `.claude/skills/exportar-fuente/`) te ofrece los
+destinos registrados, o te pregunta la fuente, el nombre de la carpeta y la ruta (y si la guarda); valida
+y ejecuta el comando. `/generar-fuente` ofrece exportar a los registrados al terminar.
 
 Luego el proyecto referencia **la copia**, por ejemplo en `angular.json`:
 `"styles": ["src/assets/fonts/incontrol-icons/incontrol-icons.css"]` y `<i class="icon-search"></i>`.
-Cuando cambien los SVG: `npm run build -- <fuente>` aquí y vuelve a exportar con `--force`.
+Cuando cambien los SVG: `npm run release -- <fuente>` (con destinos registrados), o
+`npm run build -- <fuente>` aquí y vuelve a exportar con `--force`.
 
 ## Códigos Unicode estables
 

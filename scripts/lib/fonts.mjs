@@ -1,5 +1,5 @@
 // Shared by the scripts: where fonts live, how their icons.config.mjs is read and validated.
-import { existsSync, readdirSync, readFileSync } from 'node:fs';
+import { existsSync, readdirSync, readFileSync, writeFileSync } from 'node:fs';
 import { dirname, join, relative } from 'node:path';
 import { fileURLToPath, pathToFileURL } from 'node:url';
 
@@ -29,7 +29,28 @@ export function readTrash(fontDir) {
     throw new Error(`${toPosix(path)} is not valid JSON; restore it from git.`);
   }
 }
-export const KEBAB = '[a-z0-9]+(?:-[a-z0-9]+)*';
+/**
+ * fonts/<font>/export.local.json (git-ignored, absolute paths depend on the machine): the project folders
+ * the font is exported to, { targets: [{ name, path, folder? }] }. Written by export-icons.mjs --save.
+ */
+export const EXPORT_FILE = 'export.local.json';
+
+/** fonts/<font>/export.local.json targets, [] when none are registered. */
+export function readTargets(fontDir) {
+  const path = join(fontDir, EXPORT_FILE);
+  if (!existsSync(path)) return [];
+  try {
+    return JSON.parse(readFileSync(path, 'utf8')).targets ?? [];
+  } catch {
+    throw new Error(`${toPosix(path)} is not valid JSON; fix it or delete it and register the targets again.`);
+  }
+}
+
+export function saveTargets(fontDir, targets) {
+  writeFileSync(join(fontDir, EXPORT_FILE), JSON.stringify({ targets }, null, 2) + '\n');
+}
+
+export const KEBAB ='[a-z0-9]+(?:-[a-z0-9]+)*';
 
 export const toPosix = (path) => relative(ROOT, path).replace(/\\/g, '/');
 

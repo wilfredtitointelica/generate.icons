@@ -61,7 +61,10 @@ npm run build   <span class="comment"># cada vez que cambian los SVG</span></cod
 
   <h2 id="comando">3. Comando</h2>
   <p>Desde la carpeta <code>generate.icons/</code>:</p>
-<pre><code>npm run export -- &lt;fuente&gt; &lt;ruta&gt; [&lt;ruta&gt;…] [--folder &lt;carpeta&gt;] [--force]</code></pre>
+<pre><code>npm run export -- &lt;fuente&gt; &lt;ruta&gt; [&lt;ruta&gt;…] [--folder &lt;carpeta&gt;] [--force] [--save [--name &lt;nombre&gt;]]
+npm run export -- &lt;fuente&gt; [--only &lt;nombre&gt;,…]   <span class="comment"># destinos registrados</span>
+npm run export -- &lt;fuente&gt; --list                 <span class="comment"># ver los registrados</span>
+npm run release -- &lt;fuente&gt; [--only &lt;nombre&gt;,…]  <span class="comment"># build + export a los registrados</span></code></pre>
   <p>El <code>--</code> después de <code>export</code> es obligatorio: separa los argumentos de npm de los del script.</p>
 
   <div class="table-wrap">
@@ -77,7 +80,7 @@ npm run build   <span class="comment"># cada vez que cambian los SVG</span></cod
         </tr>
         <tr>
           <td><code>&lt;ruta&gt;</code></td>
-          <td>Sí</td>
+          <td>Sí, salvo con destinos registrados</td>
           <td>
             Carpeta <strong>donde se crea</strong> la carpeta de iconos. Mejor absoluta y entre comillas.
             Si es relativa, se resuelve desde la carpeta donde ejecutas npm. Puedes pasar varias (una por
@@ -96,7 +99,26 @@ npm run build   <span class="comment"># cada vez que cambian los SVG</span></cod
         <tr>
           <td><code>--force</code></td>
           <td>No</td>
-          <td>Sobrescribe una copia anterior. Sin él, si ya existe una copia, no se escribe nada.</td>
+          <td>Sobrescribe una copia anterior. Sin él, si ya existe una copia, no se escribe nada. Los destinos registrados no lo necesitan.</td>
+        </tr>
+        <tr>
+          <td><code>--save</code></td>
+          <td>No</td>
+          <td>
+            Además de exportar, registra las rutas en <code>fonts/&lt;fuente&gt;/export.local.json</code>, con el
+            nombre de su repositorio git (o <code>--name</code>, con una sola ruta). Ver
+            <a href="#registrados">Destinos registrados</a>.
+          </td>
+        </tr>
+        <tr>
+          <td><code>--only &lt;nombre&gt;,…</code></td>
+          <td>No</td>
+          <td>Sin rutas: exporta solo a esos destinos registrados (por nombre).</td>
+        </tr>
+        <tr>
+          <td><code>--list</code></td>
+          <td>No</td>
+          <td>Muestra los destinos registrados de la fuente y marca los que no existen en disco.</td>
         </tr>
       </tbody>
     </table>
@@ -126,6 +148,26 @@ npm run build   <span class="comment"># cada vez que cambian los SVG</span></cod
     tiene una copia (sin <code>--force</code>) o está dentro de <code>generate.icons/</code>, no se
     escribe en ninguna.
   </p>
+
+  <h3 id="registrados">Destinos registrados (recomendado)</h3>
+  <p>Para no copiar rutas cada vez que cambian los iconos, regístralas <strong>una sola vez</strong> con <code>--save</code>:</p>
+<pre><code>npm run export -- incontrol-icons "C:/projects/app-a/src/assets/fonts" "C:/projects/app-b/src/assets/fonts" --save</code></pre>
+  <p>
+    Quedan en <code>fonts/incontrol-icons/export.local.json</code>, que está en <code>.gitignore</code> (las
+    rutas son de tu máquina; cada persona registra las suyas). <code>folder</code> es opcional y permite
+    otro nombre de carpeta por proyecto. Para cambiar o quitar un destino, edita el archivo.
+  </p>
+<pre><code>{
+  "targets": [
+    { "name": "app-a", "path": "C:/projects/app-a/src/assets/fonts" },
+    { "name": "app-b", "path": "C:/projects/app-b/src/assets/fonts", "folder": "icons" }
+  ]
+}</code></pre>
+  <p>A partir de ahí, sin rutas:</p>
+<pre><code>npm run release -- incontrol-icons             <span class="comment"># genera y exporta a todos los registrados</span>
+npm run export -- incontrol-icons              <span class="comment"># solo exporta a todos</span>
+npm run export -- incontrol-icons --only app-a <span class="comment"># solo a ese</span></code></pre>
+  <p>Los destinos registrados se sobrescriben sin <code>--force</code>; como siempre, solo los 9 archivos.</p>
 
   <h3>Desde otra carpeta, con ruta relativa</h3>
 <pre><code><span class="comment"># ejecutado desde C:/projects/mi-app</span>
@@ -183,7 +225,7 @@ npm --prefix C:/christian/projects/generate.icons run export -- incontrol-icons 
     <li><span class="ok">La fuente existe</span>: hay <code>fonts/&lt;fuente&gt;/icons.config.mjs</code>.</li>
     <li><span class="ok">La fuente está generada</span>: existen los 8 archivos de <code>dist/</code> y <code>icons.json</code>.</li>
     <li><span class="ok">El destino está fuera de <code>generate.icons/</code></span>: la copia es para un proyecto, no para el generador.</li>
-    <li><span class="ok">No hay copia anterior</span>, o se pasó <code>--force</code>.</li>
+    <li><span class="ok">No hay copia anterior</span>, o se pasó <code>--force</code>, o es un destino registrado.</li>
   </ul>
   <p>Además:</p>
   <ul>
@@ -201,9 +243,10 @@ npm --prefix C:/christian/projects/generate.icons run export -- incontrol-icons 
     (“exporta los iconos a C:/projects/mi-app/src/assets/fonts”).
   </p>
   <ol class="steps">
-    <li>Te pregunta, en un solo mensaje, el <strong>nombre de la carpeta</strong> (por defecto <code>incontrol-icons</code>) y la <strong>ruta</strong>.</li>
+    <li>Si la fuente tiene <a href="#registrados">destinos registrados</a>, te los muestra y pregunta si exporta a todos, a algunos o a otra ruta.</li>
+    <li>Para una ruta nueva, te pregunta en un solo mensaje el <strong>nombre de la carpeta</strong> (por defecto <code>incontrol-icons</code>), la <strong>ruta</strong> y si la <strong>registra</strong> para la próxima vez.</li>
     <li>Si la fuente no está generada, te ofrece ejecutar <code>npm run build -- &lt;fuente&gt;</code>.</li>
-    <li>Si ya hay una copia en el destino, te muestra qué archivos hay y pide confirmación antes de sobrescribirlos.</li>
+    <li>Si ya hay una copia en una ruta nueva, te muestra qué archivos hay y pide confirmación antes de sobrescribirlos.</li>
     <li>Ejecuta el comando con la ruta absoluta y te indica la carpeta resultante.</li>
   </ol>
   <div class="note">
@@ -244,7 +287,11 @@ npm --prefix C:/christian/projects/generate.icons run export -- incontrol-icons 
       (ver <a href="generar-fuente.html">Generar fuente</a>).
     </li>
     <li>Revisar <code>dist/incontrol-icons.html</code>.</li>
-    <li>Volver a exportar con <code>--force</code> (o con <code>/exportar-fuente</code>, confirmando la sobrescritura).</li>
+    <li>
+      Volver a exportar: con destinos registrados, <code>/generar-fuente</code> te lo ofrece al terminar, o
+      <code>npm run release -- incontrol-icons</code> hace los pasos 2 y 4 de una vez. Sin ellos, con
+      <code>--force</code> (o con <code>/exportar-fuente</code>, confirmando la sobrescritura).
+    </li>
   </ol>
   <p>
     Los iconos existentes conservan su código Unicode al añadir otros nuevos, así que las clases ya
@@ -287,6 +334,16 @@ npm --prefix C:/christian/projects/generate.icons run export -- incontrol-icons 
           <td class="err">… already has a copy (…). Pass --force …</td>
           <td>La carpeta destino ya tiene una exportación anterior.</td>
           <td>Si quieres reemplazarla, repite el comando con <code>--force</code>.</td>
+        </tr>
+        <tr>
+          <td class="err">… has no registered destinations …</td>
+          <td>Se ejecutó sin rutas y la fuente no tiene <code>export.local.json</code>.</td>
+          <td>Exporta una vez con las rutas y <code>--save</code>.</td>
+        </tr>
+        <tr>
+          <td class="err">Unknown registered destinations: …</td>
+          <td><code>--only</code> con un nombre que no está registrado.</td>
+          <td>Mira los nombres con <code>--list</code>.</td>
         </tr>
       </tbody>
     </table>
